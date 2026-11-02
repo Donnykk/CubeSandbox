@@ -16,6 +16,8 @@ The logic lives in `CubeMaster/pkg/templatecenter`; TC just runs it as its own p
 
 By default the artifact never crosses the network: both mount the same disk (`/data/CubeMaster/storage`); TC writes, CubeMaster reads — so they must be co-located and single-replica. With S3/MinIO configured (`controlPlane.artifactStore.s3Backed=true`) the durable copy lives in object storage and local disk is build scratch, so both TC and CubeMaster can run multiple replicas (see "Multiple replicas" below).
 
+For new builds using S3, TC removes the build's local ext4 and scratch directories after the upload finishes. A successful upload is reported as `BUILT`; an upload failure is reported as `FAILED`, without falling back to local storage. Cleanup errors are logged without discarding a successfully uploaded object. Local-only builds, the `fs` backend, and reused artifacts retain their existing storage behavior. This does not sweep files left by older builds or interrupted processes.
+
 ## Configuration
 
 No switch: CubeMaster can no longer build templates in-process, so every `template-from-image` request is forwarded to TC and fails outright if TC is unreachable. Only two addresses matter:

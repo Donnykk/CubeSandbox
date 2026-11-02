@@ -126,6 +126,13 @@ func Build(ctx context.Context, jobID string, req *types.CreateTemplateFromImage
 	// spending minutes pulling an image, so a misconfigured host fails fast
 	// at PULLING with a clear message instead of deep inside BUILDING_EXT4.
 	reportPhase(templatecenter.JobPhasePulling, 5)
+	s3Client, s3CfgEnabled := SharedS3Client()
+	s3Configured, _, _, _, _, _, _, _, _ := tcconfig.S3Config()
+	if !s3CfgEnabled && (tcconfig.ArtifactStoreBackend() == "fs" || s3Configured) {
+		err := fmt.Errorf("configured artifact store failed to open")
+		reportFailed(templatecenter.JobPhasePulling, err.Error())
+		return err
+	}
 	if err := image.EnsureArtifactBuildPreflight(ctx); err != nil {
 		errMsg := fmt.Sprintf("build preflight fail: %v", err)
 		logger.Errorf(errMsg)
@@ -205,15 +212,6 @@ func Build(ctx context.Context, jobID string, req *types.CreateTemplateFromImage
 		"source_image_digest":       source.Digest,
 	}); err != nil {
 		logger.Warnf("report fingerprint fail: %v", err)
-	}
-
-	// Resolve S3 config once for both reuse and fresh-build paths. This is
-	// done before acquiring the artifact lock so the lock-free polling path
-	// can still generate presigned URLs when reusing an artifact built by a
-	// sibling replica.
-	s3Client, s3CfgEnabled := SharedS3Client()
-	if !s3CfgEnabled && tcconfig.ArtifactStoreBackend() == "fs" {
-		return fmt.Errorf("CUBE_ARTIFACT_STORE_BACKEND=fs but the artifact store failed to open")
 	}
 
 	// Step 6: Serialize same-spec builds (fingerprint, not artifactID — the
@@ -338,21 +336,25 @@ func runBuildLocked(
 	}
 
 	// Step 8: Upload to the configured blob backend, then report BUILT.
-	// backend=s3 keeps today's fallback-to-local-disk on upload failure.
-	// backend=fs is explicit: a failed put is a failed build.
 	artifactURL := ""
 	uploaded := false
 	if s3CfgEnabled && s3Client != nil {
-		if _, err := s3Client.Upload(ctx, artifactID, result.Ext4Path, result.SHA256); err != nil {
-			if s3Client.BackendName() == "fs" {
-				reportFailed(templatecenter.JobPhaseBuildingExt4, fmt.Sprintf("upload artifact to fs store: %v", err))
-				return fmt.Errorf("upload artifact to fs store: %w", err)
+		_, uploadErr := s3Client.Upload(ctx, artifactID, result.Ext4Path, result.SHA256)
+		if s3Client.BackendName() == "s3" {
+			// Upload has finished reading the file. This build's local copy is
+			// scratch in S3 mode, even when the upload failed. Use the actual
+			// output directory because BuildExt4 may have used the fallback root.
+			if err := cleanupBuildOutput(artifactID, result.Ext4Path); err != nil {
+				logger.Warnf("cleanup local artifact after S3 upload: %v", err)
 			}
-			logger.Warnf("upload artifact to s3 fail, falling back to local storage: %v", err)
-		} else {
-			uploaded = true
-			artifactURL = artifactPresignedURL(ctx, s3CfgEnabled, s3Client, artifactID, logger)
 		}
+		if uploadErr != nil {
+			err := fmt.Errorf("upload artifact to %s store: %w", s3Client.BackendName(), uploadErr)
+			reportFailed(templatecenter.JobPhaseBuildingExt4, err.Error())
+			return err
+		}
+		uploaded = true
+		artifactURL = artifactPresignedURL(ctx, s3CfgEnabled, s3Client, artifactID, logger)
 	}
 
 	// Step 9: Report BUILT. CubeMaster persists the payload into result_json
@@ -365,6 +367,16 @@ func runBuildLocked(
 	logger.Infof("template build completed: artifact_id=%s sha256=%s size=%d",
 		artifactID, result.SHA256, result.SizeBytes)
 	return nil
+}
+
+func cleanupBuildOutput(artifactID, ext4Path string) error {
+	var errs []error
+	for _, dir := range []string{filepath.Join(image.ArtifactWorkRootDir(), artifactID), filepath.Dir(ext4Path)} {
+		if err := os.RemoveAll(dir); err != nil {
+			errs = append(errs, fmt.Errorf("remove %s: %w", dir, err))
+		}
+	}
+	return errors.Join(errs...)
 }
 
 func reportExistingArtifact(
@@ -450,8 +462,7 @@ func reportArtifactBuilt(
 		payload["artifact_url"] = artifactURL
 	}
 	// Only stamp backend/key after a successful upload (or reuse of an
-	// already-stored object). A configured client that failed Put must
-	// leave the three store columns empty so Master stays on local disk.
+	// already-stored object). Local-only builds leave these fields empty.
 	if inStore && s3Client != nil {
 		payload["storage_backend"] = s3Client.BackendName()
 		if objectKey == "" {

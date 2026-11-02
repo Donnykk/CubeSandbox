@@ -10,6 +10,8 @@ TC owns the build (pull, ext4, fingerprint, S3 upload) and the artifact data (lo
 CubeMaster owns the template API, job state, cross-node distribution, and deletion orchestration.
 Compat matrix and download routes: CubeMaster reverse-proxies to TC (302 to S3 for downloads).
 
+For new builds using S3, TC removes the build's local ext4 and scratch directories after the upload finishes. A successful upload is reported as `BUILT`; an upload failure is reported as `FAILED`, without falling back to local storage. Cleanup errors are logged without discarding a successfully uploaded object. Local-only builds, the `fs` backend, and reused artifacts retain their existing storage behavior. This does not sweep files left by older builds or interrupted processes.
+
 ## Run
 
 No `-conf` flag; config is located via env var:
