@@ -245,6 +245,19 @@ func applyTemplateImageSpec(imageSpecIn *types.ImageSpec, imageSpecOut *types.Im
 	}
 }
 
+// applySnapshotTemplateAnnotationsAndLabels preserves the placement-selected
+// shim while copying the saved snapshot request. Static operator configuration
+// uses the ordinary merge and keeps its component override precedence.
+func applySnapshotTemplateAnnotationsAndLabels(reqIn, reqOut *types.CreateCubeSandboxReq) {
+	key := constants.CubeAnnotationComponentCubeShimVersion
+	selected, bound := reqOut.Annotations[key]
+	applyTemplateAnnotationsAndLabels(reqIn, reqOut)
+	delete(reqOut.Annotations, key)
+	if bound {
+		reqOut.Annotations[key] = selected
+	}
+}
+
 //go:noinline
 func applyTemplateAnnotationsAndLabels(reqIn *types.CreateCubeSandboxReq, reqOut *types.CreateCubeSandboxReq) {
 	if reqIn.Annotations != nil {
@@ -252,10 +265,6 @@ func applyTemplateAnnotationsAndLabels(reqIn *types.CreateCubeSandboxReq, reqOut
 			reqOut.Annotations = make(map[string]string)
 		}
 		for k, v := range reqIn.Annotations {
-			// Host runtime bindings belong to the selected replica, not the saved request.
-			if k == constants.CubeAnnotationComponentCubeShimVersion {
-				continue
-			}
 			if k == constants.AnnotationsNetID {
 				if _, ok := reqOut.Annotations[constants.AnnotationsNetID]; ok {
 
@@ -514,7 +523,11 @@ func dealCubeboxCreateReqWithTemplateCenter(ctx context.Context, templateID stri
 		log.G(ctx).Infof("getTemplateParam success:template=%s %s", templateID, summarizeTemplateRequest(templateReq))
 	}
 
-	applyTemplateAnnotationsAndLabels(templateReq, reqInOut)
+	if strings.EqualFold(templateKind, templatecenter.TemplateKindSnapshot) {
+		applySnapshotTemplateAnnotationsAndLabels(templateReq, reqInOut)
+	} else {
+		applyTemplateAnnotationsAndLabels(templateReq, reqInOut)
+	}
 	if err := templatecenter.InheritCreateBackendFromTemplate(reqInOut, templateReq); err != nil {
 		return err
 	}
