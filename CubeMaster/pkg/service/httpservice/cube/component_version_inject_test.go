@@ -44,9 +44,17 @@ func TestTemplateMergeCannotReplaceSelectedReplicaShim(t *testing.T) {
 			request := &types.CreateCubeSandboxReq{Annotations: map[string]string{constants.CubeAnnotationComponentCubeShimVersion: "caller"}}
 			snapshot := &types.CreateCubeSandboxReq{Annotations: map[string]string{constants.CubeAnnotationComponentCubeShimVersion: "snapshot", "custom": "retained"}}
 			injectReplicaComponentVersionAnnotations(request.Annotations, templatecenter.ReplicaStatus{ShimVersion: selected})
-			applyTemplateAnnotationsAndLabels(snapshot, request)
+			applySnapshotTemplateAnnotationsAndLabels(snapshot, request)
 			require.Equal(t, selected, request.Annotations[constants.CubeAnnotationComponentCubeShimVersion])
 			require.Equal(t, "retained", request.Annotations["custom"])
 		})
 	}
+}
+
+func TestLocalTemplateShimPinOverridesCaller(t *testing.T) {
+	key := constants.CubeAnnotationComponentCubeShimVersion
+	configured := &types.CreateCubeSandboxReq{Annotations: map[string]string{key: "operator-shim"}}
+	requested := &types.CreateCubeSandboxReq{Annotations: map[string]string{key: "caller-shim"}}
+	applyTemplateAnnotationsAndLabels(configured, requested)
+	require.Equal(t, "operator-shim", requested.Annotations[key])
 }
