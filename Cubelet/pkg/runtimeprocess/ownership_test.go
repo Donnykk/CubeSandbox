@@ -117,3 +117,19 @@ func BenchmarkTAPOwnersManyDescriptors(b *testing.B) {
 		}
 	}
 }
+
+func TestOwnershipInspectionDoesNotReturnPartialOwners(t *testing.T) {
+	root := t.TempDir()
+	owner := fakeRuntime(t, root, "11", "/bin/runtime")
+	if err := os.WriteFile(filepath.Join(owner, "fdinfo", "1"), []byte("iff: tap0\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	broken := fakeRuntime(t, root, "42", "/bin/runtime")
+	if err := os.Mkdir(filepath.Join(broken, "fdinfo", "1"), 0o700); err != nil {
+		t.Fatal(err)
+	}
+	owners, err := TAPOwners(context.Background(), root, "tap0", 0)
+	if err == nil || owners != nil {
+		t.Fatalf("partial ownership escaped: owners=%v err=%v", owners, err)
+	}
+}

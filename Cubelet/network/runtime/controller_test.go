@@ -65,7 +65,7 @@ func (f *createTestTapDeviceAdapter) Restore(tap *tapDevice, _ int, _ string, _ 
 	return tap, nil
 }
 
-func (f *createTestTapDeviceAdapter) CheckUnused(string) error { return nil }
+func (f *createTestTapDeviceAdapter) CheckUnused(context.Context, string) error { return nil }
 
 func (f *createTestTapDeviceAdapter) Open(_ string) (*os.File, error) {
 	f.openCount++

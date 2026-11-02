@@ -8,6 +8,9 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"os"
+	"path/filepath"
+	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -70,6 +73,13 @@ accepted here because the alternative is a permanently reduced pool.`,
 				"Refusing to kill a process we cannot identify", id.Pid, st)
 		}
 
+		executable, err := os.Readlink(filepath.Join("/proc", strconv.Itoa(id.Pid), "exe"))
+		if err != nil {
+			return fmt.Errorf("inspect reclaim target executable: %w", err)
+		}
+		if err := validateReclaimTarget(id.Pid, os.Getpid(), executable); err != nil {
+			return err
+		}
 		comm := utils.ProcessComm(id.Pid)
 		fmt.Fprintf(out, "pid %d (%s), start time %d\n", id.Pid, comm, id.StartTime)
 

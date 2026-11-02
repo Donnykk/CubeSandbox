@@ -21,7 +21,7 @@ func (s *NetworkController) cleanupAttemptContext() (context.Context, context.Ca
 	if timeout <= 0 {
 		timeout = 2 * time.Second
 	}
-	return context.WithTimeout(context.Background(), timeout*2)
+	return context.WithTimeout(context.Background(), timeout*2+ownershipTimeout(s.cfg.TapOwnershipTimeout)*2)
 }
 
 func (s *NetworkController) cleanupTapOnce(state *managedState, stateKind StateFileKind, reason string) error {
@@ -217,7 +217,7 @@ func (s *NetworkController) cleanupTapForReuse(ctx context.Context, state *manag
 	}
 	// Do not drain the queue or remove its datapath while an old VM can still
 	// consume it. Preserve the durable deleting record and Cleaning state.
-	if err := s.checkTapUnused(state.TapName); err != nil {
+	if err := s.checkTapUnused(ctx, state.TapName); err != nil {
 		return err
 	}
 	if state.tap == nil {
@@ -266,7 +266,7 @@ func (s *NetworkController) cleanupTapForReuse(ctx context.Context, state *manag
 	s.recordCleanStep("runtime_cleaned")
 
 	s.resetTapRuntimeFieldsForPool(state.tap)
-	if err := s.verifyTapReusableFD(state.tap); err != nil {
+	if err := s.verifyTapReusableFD(ctx, state.tap); err != nil {
 		return err
 	}
 	if err := s.installPoolDefaultDeny(state.tap); err != nil {
@@ -384,6 +384,9 @@ func (s *NetworkController) handleCleaningEntries() {
 			record := cleanupRecordForEntry(records, entry)
 			if record != nil {
 				processedRecords[stateRecordIdentity(record)] = struct{}{}
+			}
+			if !s.tapPool.OwnershipRetryDue(entry.TapName, time.Now()) {
+				continue
 			}
 			s.withSandboxCleanupLock(entry.OwnerSandboxID, func() {
 				if record != nil {

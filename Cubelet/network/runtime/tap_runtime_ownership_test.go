@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net"
 	"testing"
+	"time"
 )
 
 type ownershipTestTapAdapter struct {
@@ -15,7 +16,7 @@ type ownershipTestTapAdapter struct {
 	uncertain  bool
 }
 
-func (a *ownershipTestTapAdapter) CheckUnused(string) error {
+func (a *ownershipTestTapAdapter) CheckUnused(context.Context, string) error {
 	a.calls++
 	if a.uncertain {
 		return errors.New("procfs inspection failed")
@@ -155,7 +156,7 @@ func (a *legacyOwnedTapAdapter) GetByName(name string) (*tapDevice, error) {
 	return nil, nil
 }
 
-func (a *legacyOwnedTapAdapter) CheckUnused(name string) error {
+func (a *legacyOwnedTapAdapter) CheckUnused(_ context.Context, name string) error {
 	a.checked = name
 	return errTapOwned
 }
@@ -169,10 +170,37 @@ func TestConflictingLegacyTapChecksActualOwnerBeforeDestroy(t *testing.T) {
 		legacy:                     &tapDevice{Name: names[len(names)-1], Index: 42, IP: ip},
 	}
 	controller.tapAdapter = adapter
-	if err := controller.cleanupConflictingTap(ip); !errors.Is(err, errTapOwned) {
+	if err := controller.cleanupConflictingTap(context.Background(), ip); !errors.Is(err, errTapOwned) {
 		t.Fatalf("expected occupied legacy TAP, got %v", err)
 	}
 	if adapter.checked != adapter.legacy.Name || adapter.destroyCount != 0 {
 		t.Fatalf("legacy ownership bypassed: checked=%s destroyed=%d", adapter.checked, adapter.destroyCount)
+	}
+}
+
+func TestMaintenanceBacksOffBusyOwnershipAndEventuallyRecovers(t *testing.T) {
+	controller := newCreateTestController(t, nil)
+	if _, err := controller.EnsureNetwork(context.Background(), &EnsureNetworkRequest{SandboxID: "owner"}); err != nil {
+		t.Fatal(err)
+	}
+	name := controller.states["owner"].TapName
+	adapter := &ownershipTestTapAdapter{TapDeviceAdapter: controller.tapAdapter, busy: true}
+	controller.tapAdapter = adapter
+	if _, err := controller.ReleaseNetwork(context.Background(), &ReleaseNetworkRequest{SandboxID: "owner"}); err == nil {
+		t.Fatal("busy owner must keep cleanup pending")
+	}
+	calls := adapter.calls
+	controller.handleCleaningEntries()
+	if adapter.calls != calls {
+		t.Fatal("maintenance ignored ownership backoff")
+	}
+	controller.tapPool.mu.Lock()
+	controller.tapPool.byName[name].OwnershipRetryAfter = time.Now().Add(-time.Second)
+	controller.tapPool.mu.Unlock()
+	adapter.busy = false
+	controller.handleCleaningEntries()
+	state, _, _ := controller.tapPool.StateByName(name)
+	if state != TapPoolReady || adapter.calls < calls+2 {
+		t.Fatalf("cleanup did not recheck and recover: state=%s calls=%d", state, adapter.calls)
 	}
 }

@@ -62,6 +62,7 @@ type Config struct {
 
 	CubeEgressAdminURL    string           `toml:"cube_egress_admin_url"`
 	CubeEgressPushTimeout tomlext.Duration `toml:"cube_egress_push_timeout"`
+	TapOwnershipTimeout   tomlext.Duration `toml:"tap_ownership_timeout"`
 	CubeRouterEnable      bool             `toml:"cube_router_enable"`
 	CubeRouterCIDR        string           `toml:"cube_router_cidr"`
 	CubeRouterMacAddr     string           `toml:"cube_router_mac_addr"`
@@ -148,6 +149,9 @@ func networkRuntimeConfigFromPluginConfig(config *Config) networkruntime.Config 
 	cfg.CubeEgressAdminURL = config.CubeEgressAdminURL
 	if config.CubeEgressPushTimeout != 0 {
 		cfg.CubeEgressPushTimeout = tomlext.ToStdTime(config.CubeEgressPushTimeout)
+	}
+	if config.TapOwnershipTimeout != 0 {
+		cfg.TapOwnershipTimeout = tomlext.ToStdTime(config.TapOwnershipTimeout)
 	}
 	cfg.CubeRouterEnable = config.CubeRouterEnable
 	if config.CubeRouterCIDR != "" {
