@@ -781,7 +781,7 @@ func (s *NetworkController) claimRecoveredSuccessResources(state *managedState) 
 // (RTM_GETLINK), not LinkList. A full dump of every host interface on every
 // pool-miss create races with concurrent TAP churn and surfaces as netlink
 // ErrDumpInterrupted under density load.
-func (s *NetworkController) cleanupConflictingTap(ip net.IP) error {
+func (s *NetworkController) cleanupConflictingTap(ctx context.Context, ip net.IP) error {
 	var tap *tapDevice
 	for _, name := range candidateTapNames(ip.String()) {
 		found, err := s.tapAdapter.GetByName(name)
@@ -802,7 +802,7 @@ func (s *NetworkController) cleanupConflictingTap(ip net.IP) error {
 	if err := s.checkTapConflict(tap, ip); err != nil {
 		return err
 	}
-	if err := s.checkTapUnused(tap.Name); err != nil {
+	if err := s.checkTapUnused(ctx, tap.Name); err != nil {
 		return fmt.Errorf("verify conflicting TAP %s ownership: %w", tap.Name, err)
 	}
 	if err := s.destroyTapIndex(tap.Index); err != nil {

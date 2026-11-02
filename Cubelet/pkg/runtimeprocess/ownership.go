@@ -84,6 +84,9 @@ func ScanTAPDescriptors(ctx context.Context, procRoot string, excludePID int, st
 // Multiple duplicated descriptors in one process count as one owner.
 func TAPOwners(ctx context.Context, procRoot, tapName string, selfPID int) ([]int, error) {
 	descriptors, err := ScanTAPDescriptors(ctx, procRoot, selfPID, true)
+	if err != nil {
+		return nil, err
+	}
 	var found []int
 	for _, fd := range descriptors {
 		if fd.Interface == tapName {

@@ -87,6 +87,8 @@ dynamic_config_path = "/usr/local/services/cubetoolbox/Cubelet/dynamicconf/conf.
     mvm_mtu = 1500
     cube_egress_admin_url = "http://127.0.0.1:9091"
     cube_egress_push_timeout = "2s"
+    # Upper bound for a fresh ownership scan; caller cancellation is honored.
+    tap_ownership_timeout = "2s"
     cube_router_enable = false
     cube_router_cidr = ""
     cube_router_mac_addr = "22:90:6f:cf:cf:cf"

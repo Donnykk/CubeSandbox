@@ -54,6 +54,9 @@ type Config struct {
 	// purpose so a transient kernel hiccup doesn't fail the push.
 	CubeEgressPushTimeout time.Duration
 
+	// TapOwnershipTimeout caps a scan; the caller deadline can expire earlier.
+	TapOwnershipTimeout time.Duration
+
 	// Route-aware egress options. When enabled, sandbox egress is redirected to a
 	// dedicated dummy device so the host routing table chooses the real uplink.
 	CubeRouterEnable  bool
@@ -80,6 +83,7 @@ func DefaultConfig() Config {
 		HostPortBindIP:        "127.0.0.1",
 		CubeEgressAdminURL:    "http://127.0.0.1:9091",
 		CubeEgressPushTimeout: 2 * time.Second,
+		TapOwnershipTimeout:   2 * time.Second,
 
 		// Route-aware egress options.
 		CubeRouterEnable:  false,

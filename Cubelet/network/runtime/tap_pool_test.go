@@ -5,6 +5,7 @@
 package runtime
 
 import (
+	"context"
 	"net"
 	"os"
 	"testing"
@@ -266,7 +267,7 @@ func (f *fakeTapDeviceAdapter) Restore(tap *tapDevice, _ int, _ string, _ int) (
 	return tap, nil
 }
 
-func (f *fakeTapDeviceAdapter) CheckUnused(string) error { return nil }
+func (f *fakeTapDeviceAdapter) CheckUnused(context.Context, string) error { return nil }
 
 func (f *fakeTapDeviceAdapter) Open(_ string) (*os.File, error) {
 	f.openCount++

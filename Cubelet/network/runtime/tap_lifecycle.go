@@ -157,19 +157,19 @@ func (s *NetworkController) resetTapRuntimeFieldsForPool(tap *tapDevice) {
 
 // checkTapUnused is a separate ownership check: duplicability of a Cubelet fd
 // says nothing about old shim processes sharing that very same open TAP queue.
-func (s *NetworkController) checkTapUnused(name string) error {
+func (s *NetworkController) checkTapUnused(ctx context.Context, name string) error {
 	if s.tapAdapter == nil {
-		return errors.New("TAP ownership adapter is unavailable")
+		return fmt.Errorf("%w: adapter unavailable", ErrTAPOwnershipInspection)
 	}
-	return s.tapAdapter.CheckUnused(name)
+	return checkTAPOwnership(ctx, s.tapAdapter, name, s.cfg.TapOwnershipTimeout)
 }
 
 // verifyTapReusableFD verifies physical ownership even on the retained-fd path.
-func (s *NetworkController) verifyTapReusableFD(tap *tapDevice) error {
+func (s *NetworkController) verifyTapReusableFD(ctx context.Context, tap *tapDevice) error {
 	if tap == nil || tap.Name == "" {
 		return nil
 	}
-	if err := s.checkTapUnused(tap.Name); err != nil {
+	if err := s.checkTapUnused(ctx, tap.Name); err != nil {
 		return err
 	}
 	if file := s.takePooledTapFD(tap.Name); file != nil {

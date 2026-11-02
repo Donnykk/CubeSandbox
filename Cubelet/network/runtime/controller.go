@@ -170,6 +170,9 @@ func newNetworkControllerFromDeps(cfg Config, deps networkControllerDeps) (*Netw
 // deliberate: host devices and cubevs are prepared first, then durable state and
 // legacy state are reconciled with live TAP/kernel inventory.
 func NewNetworkController(cfg Config) (NetworkRuntime, error) {
+	if cfg.TapOwnershipTimeout < 0 {
+		return nil, fmt.Errorf("tap_ownership_timeout must be positive")
+	}
 	deps, err := newProductionControllerDeps(cfg)
 	if err != nil {
 		return nil, err
@@ -626,7 +629,7 @@ func (s *NetworkController) createState(ctx context.Context, req *EnsureNetworkR
 	t.ensureRoute = time.Since(stageStart)
 	stageStart = time.Now()
 	requestedMappings := s.normalizePortMappings(req.PortMappings)
-	tap, entry, err := s.acquireTap(req.SandboxID)
+	tap, entry, err := s.acquireTapContext(ctx, req.SandboxID)
 	if err != nil {
 		return nil, err
 	}
@@ -816,6 +819,13 @@ func (s *NetworkController) cleanupCreateFailure(ctx context.Context, state *man
 // remains Ready but owner-reserved until success is committed; Active is only
 // published after creating -> success.
 func (s *NetworkController) acquireTap(owner string) (*tapDevice, *TapPoolEntry, error) {
+	return s.acquireTapContext(context.Background(), owner)
+}
+
+func (s *NetworkController) acquireTapContext(ctx context.Context, owner string) (*tapDevice, *TapPoolEntry, error) {
+	if err := ctx.Err(); err != nil {
+		return nil, nil, err
+	}
 	var entry *TapPoolEntry
 	var err error
 	for {
@@ -826,7 +836,7 @@ func (s *NetworkController) acquireTap(owner string) (*tapDevice, *TapPoolEntry,
 		// Includes legacy Ready entries recovered from before ownership checks
 		// were enforced. Quarantine rather than hand an old VM's queue to a new VM.
 		if entry.State == TapPoolReady {
-			if err := s.checkTapUnused(entry.TapName); err != nil {
+			if err := s.checkTapUnused(ctx, entry.TapName); err != nil {
 				if !errors.Is(err, errTapOwned) {
 					// A host-wide inspection failure also prevents future cleanup.
 					// Allocating fresh TAPs here would consume addresses indefinitely.
@@ -861,11 +871,11 @@ func (s *NetworkController) acquireTap(owner string) (*tapDevice, *TapPoolEntry,
 	}
 	// A fresh queue would also become uncollectable on a host whose procfs
 	// cannot be inspected. Check before consuming an address or creating a TAP.
-	if err := s.checkTapUnused(tapName(ip.String())); err != nil {
+	if err := s.checkTapUnused(ctx, tapName(ip.String())); err != nil {
 		s.allocator.Release(ip)
 		return nil, nil, fmt.Errorf("verify fresh TAP ownership: %w", err)
 	}
-	if err := s.cleanupConflictingTap(ip); err != nil {
+	if err := s.cleanupConflictingTap(ctx, ip); err != nil {
 		s.allocator.Release(ip)
 		return nil, nil, err
 	}

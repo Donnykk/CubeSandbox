@@ -12,7 +12,6 @@ import (
 	"os"
 	"strings"
 	"syscall"
-	"time"
 
 	"github.com/tencentcloud/CubeSandbox/CubeNet/cubevs"
 	"github.com/tencentcloud/CubeSandbox/Cubelet/network/runtime/systemnet"
@@ -87,7 +86,8 @@ type TapDeviceAdapter interface {
 	// Restore reconciles link state, MTU, and ARP. It does not attach the filter.
 	Restore(tap *tapDevice, mtu int, mvmMacAddr string, cubeDevIdx int) (*tapDevice, error)
 	Open(name string) (*os.File, error)
-	CheckUnused(name string) error
+	// CheckUnused certifies ownership within the caller's deadline.
+	CheckUnused(context.Context, string) error
 	Close(file *os.File)
 	List() (map[string]*tapDevice, error)
 	GetByName(name string) (*tapDevice, error)
@@ -123,13 +123,8 @@ func (realTapDeviceAdapter) Open(name string) (*os.File, error) {
 	return openTapFdByName(name)
 }
 
-// CheckUnused is independent of containerd's task list. A retained Cubelet fd
-// is not evidence that all previous shim/VMM handoff duplicates were closed.
-var errTapOwned = errors.New("TAP has a foreign descriptor owner")
-
-func (realTapDeviceAdapter) CheckUnused(name string) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-	defer cancel()
+// CheckUnused inspects physical descriptor ownership independently of task metadata.
+func (realTapDeviceAdapter) CheckUnused(ctx context.Context, name string) error {
 	owners, err := runtimeprocess.TAPOwners(ctx, "/proc", name, os.Getpid())
 	if err != nil {
 		return fmt.Errorf("verify tap %s runtime ownership: %w", name, err)

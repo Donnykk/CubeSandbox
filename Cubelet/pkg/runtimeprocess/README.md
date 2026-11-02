@@ -6,7 +6,7 @@ Cubelet must be able to inspect every process that can receive a TAP descriptor.
 
 An inspection error releases the temporary Ready reservation without consuming the pool, then returns an error without allocating a fresh TAP. A confirmed foreign owner quarantines the queue, and acquisition tries another Ready entry or a fresh TAP. Reacquiring the same Active owner's TAP does not reject that owner's legitimate handoff.
 
-Scans cost O(total visible file descriptors). Cleanup checks before changing the datapath and again before publication; draining occurs only after the final check. Measure create latency and cleanup throughput at the intended process and pool counts. These checks have not been benchmarked on a large production node. Caching a negative result across handoffs would weaken ownership safety and is intentionally avoided.
+Scans cost O(total visible file descriptors). Cleanup checks before changing the datapath and again before publication; draining occurs only after the final check. Measure create latency and cleanup throughput at the intended process and pool counts. The changes have been deployed and verified in an internal RL sandbox cluster. Synthetic local timings are not a substitute for capacity measurements at the intended node density. Caching a negative result across handoffs would weaken ownership safety and is intentionally avoided.
 
 A quarantined queue retains its IP until physical ownership ends. It continues
 to count toward the configured inventory to avoid unbounded replacement growth;
@@ -24,3 +24,14 @@ The default destroy and cleanup flows in `Cubelet/config/config.toml` run
 before returning success. Preserve this ordering in custom workflow settings.
 A still-open foreign descriptor is therefore retained as a cleanup failure,
 not reported as a completed release.
+
+Set the network plugin's `tap_ownership_timeout` (default `2s`) to bound each
+fresh scan. The caller's cancellation and shorter deadline remain authoritative.
+Timeouts expose `ErrTAPOwnershipTimeout`; incomplete inspection remains a refusal
+to reuse the TAP. Repeated ownership-related cleanup failures back off from five
+seconds to five minutes. Manual release attempts can retry immediately, and a
+successful cleanup always performs the final fresh ownership check.
+
+`tap-holders` includes Cubelet's own pool descriptors. Those rows are expected;
+never reclaim the Cubelet process to recover a stale sandbox. Reclaim refuses a
+PID whose executable is the Cubelet executable.

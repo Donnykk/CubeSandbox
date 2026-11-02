@@ -5,10 +5,12 @@
 package runtime
 
 import (
+	"errors"
 	"fmt"
 	"net"
 	"slices"
 	"sync"
+	"time"
 )
 
 // TapPoolState is the controller-visible lifecycle of a host TAP.
@@ -29,13 +31,14 @@ const (
 // managedState, or in the controller's idle-fd registry (tapFds) for pooled
 // TAPs; the entry itself always retains identity only.
 type TapPoolEntry struct {
-	TapName        string
-	TapIfIndex     int
-	SandboxIP      net.IP
-	OwnerSandboxID string
-	State          TapPoolState
-	RetryCount     int
-	LastError      string
+	TapName             string
+	TapIfIndex          int
+	SandboxIP           net.IP
+	OwnerSandboxID      string
+	State               TapPoolState
+	RetryCount          int
+	LastError           string
+	OwnershipRetryAfter time.Time
 }
 
 // NewReadyTapPoolEntry validates the immutable identity fields for a reusable TAP.
@@ -98,6 +101,7 @@ func (e *TapPoolEntry) MarkActive(owner string) error {
 	e.OwnerSandboxID = owner
 	e.State = TapPoolActive
 	e.RetryCount = 0
+	e.OwnershipRetryAfter = time.Time{}
 	e.LastError = ""
 	return nil
 }
@@ -141,6 +145,7 @@ func (e *TapPoolEntry) MarkReady() error {
 	e.State = TapPoolReady
 	e.OwnerSandboxID = ""
 	e.RetryCount = 0
+	e.OwnershipRetryAfter = time.Time{}
 	e.LastError = ""
 	return nil
 }
@@ -239,6 +244,7 @@ func (p *TapPool) Acquire(owner string) (*TapPoolEntry, error) {
 	entry := p.entries[idx]
 	entry.OwnerSandboxID = owner
 	entry.RetryCount = 0
+	entry.OwnershipRetryAfter = time.Time{}
 	entry.LastError = ""
 	p.byOwner[owner] = entry
 	return entry, nil
@@ -381,6 +387,11 @@ func (p *TapPool) RecordFailure(tapName string, err error) {
 		return
 	}
 	entry.RetryCount++
+	if errors.Is(err, errTapOwned) || errors.Is(err, ErrTAPOwnershipInspection) {
+		entry.OwnershipRetryAfter = time.Now().Add(ownershipRetryDelay(entry.RetryCount))
+	} else {
+		entry.OwnershipRetryAfter = time.Time{}
+	}
 	if err != nil {
 		entry.LastError = err.Error()
 	}
@@ -411,4 +422,13 @@ func (p *TapPool) Entries() []*TapPoolEntry {
 		out = append(out, &snapshot)
 	}
 	return out
+}
+
+// OwnershipRetryDue avoids repeatedly scanning permanently blocked descriptors.
+// Explicit Ensure/Release attempts still perform a fresh check immediately.
+func (p *TapPool) OwnershipRetryDue(name string, now time.Time) bool {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	entry := p.byName[name]
+	return entry != nil && !now.Before(entry.OwnershipRetryAfter)
 }
