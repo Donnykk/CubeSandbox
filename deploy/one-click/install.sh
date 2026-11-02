@@ -1637,6 +1637,11 @@ start_systemd_target() {
       || log "WARN: could not enable cube-sandbox-cube-templatecenter.service"
   fi
 
+  if [[ -n "${ONE_CLICK_LOGROTATE_BIN:-}" ]] && [[ ! -f "${ONE_CLICK_LOGROTATE_BIN}" || ! -x "${ONE_CLICK_LOGROTATE_BIN}" ]]; then
+    log "WARN: logrotate override ${ONE_CLICK_LOGROTATE_BIN} is unavailable; restoring automatic discovery"
+    unset ONE_CLICK_LOGROTATE_BIN
+    remove_env_kv "${RUNTIME_ENV_FILE}" "ONE_CLICK_LOGROTATE_BIN"
+  fi
   local s3lvol_logrotate="${ONE_CLICK_LOGROTATE_BIN:-}"
   if [[ -z "${s3lvol_logrotate}" ]]; then
     s3lvol_logrotate="$(command -v logrotate 2>/dev/null || true)"

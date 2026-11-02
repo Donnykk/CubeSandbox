@@ -31,6 +31,7 @@
 #    │   ├── rcow_cpumask.sh      default SPDK -m (last two allowed CPUs)
 #    │   ├── rcow_upgrade.sh      stop without breaking a live host's I/O
 #    │   ├── rcow_purge.sh        delete an lvstore outright (irreversible)
+#    │   ├── rotate_logs.py      periodic log rotation and optional restart retention
 #    │   ├── s3lvol_rpc.py        this repo's raw JSON-RPC client
 #    │   ├── s3_prefix_rm.py      bucket cleanup, what rcow_purge.sh deletes with
 #    │   ├── s3_bucket.py         ensure-bucket, what the one-click supervisor uses

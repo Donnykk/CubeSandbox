@@ -2,6 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 """Offline checks for bounded log rotation; never touch deployment files."""
 import importlib.util
+import contextlib
+import io
+import os
 from pathlib import Path
 import subprocess
 import tempfile
@@ -134,8 +137,81 @@ class RotationTest(unittest.TestCase):
             with patch.dict(rotation.os.environ, {'ONE_CLICK_LOGROTATE_BIN': str(executable)}):
                 self.assertEqual(rotation.resolve_logrotate(), str(executable))
                 executable.unlink()
-                with self.assertRaises(RuntimeError):
-                    rotation.resolve_logrotate()
+                fallback = Path(root) / 'system-logrotate'
+                fallback.write_text('#!/bin/sh\nexit 0\n')
+                fallback.chmod(0o755)
+                with patch.object(rotation.shutil, 'which', return_value=str(fallback)):
+                    self.assertEqual(rotation.resolve_logrotate(), str(fallback))
+                fallback.unlink()
+                with patch.object(rotation.shutil, 'which', return_value=None), patch.object(rotation.os.path, 'isfile', return_value=False):
+                    with self.assertRaises(RuntimeError):
+                        rotation.resolve_logrotate()
+
+    def test_empty_reserve_uses_device_default(self):
+        with tempfile.TemporaryDirectory() as root:
+            log = Path(root) / 'active'
+            log.write_bytes(b'keep')
+            with patch.dict(rotation.os.environ, {'RCOW_LOG_RESERVE_BYTES': ''}), contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(rotation.main(['--log', str(log), '--dry-run']), 0)
+
+    def test_restart_archive_retention_is_opt_in_and_scoped(self):
+        with tempfile.TemporaryDirectory() as root:
+            p = Path(root)
+            source = p / 'active.log'
+            source.write_bytes(b'active')
+            names = ['active.log.20261030-100000', 'active.log.20261031-100000', 'active.log.20261031-100000~']
+            for name in names:
+                (p / name).write_bytes(b'archive')
+            unrelated = p / 'active.log.backup'
+            unrelated.write_bytes(b'keep')
+            symlink = p / 'active.log.20261020-100000'
+            symlink.symlink_to(unrelated)
+            hardlink = p / 'active.log.20261021-100000'
+            os.link(unrelated, hardlink)
+            rotation.prune_restart_archives(source, None)
+            self.assertTrue(all((p / name).exists() for name in names))
+            rotation.prune_restart_archives(source, 2)
+            self.assertFalse((p / names[0]).exists())
+            self.assertTrue(all((p / name).exists() for name in names[1:]))
+            self.assertTrue(symlink.is_symlink())
+            self.assertTrue(hardlink.exists())
+            self.assertEqual(source.read_bytes(), b'active')
+            self.assertEqual(unrelated.read_bytes(), b'keep')
+
+    def test_restart_retention_dry_run_preserves_archives(self):
+        with tempfile.TemporaryDirectory() as root:
+            p = Path(root)
+            source = p / 'active.log'
+            source.write_bytes(b'keep')
+            archive = p / 'active.log.20261030-100000'
+            archive.write_bytes(b'keep')
+            with contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(rotation.main(['--log', str(source), '--restart-retain', '1', '--dry-run']), 0)
+            self.assertEqual(archive.read_bytes(), b'keep')
+
+    def test_installer_discovers_binary_after_stale_override(self):
+        installer = (Path(__file__).parents[2] / 'deploy/one-click/install.sh').read_text()
+        start = installer.index('  if [[ -n "${ONE_CLICK_LOGROTATE_BIN:-}" ]] &&')
+        end = installer.index('\n  systemctl enable --now "${target}"', start)
+        block = installer[start:end]
+        with tempfile.TemporaryDirectory() as root:
+            p = Path(root)
+            executable = p / 'logrotate'
+            executable.write_text('#!/bin/sh\nexit 0\n')
+            executable.chmod(0o755)
+            fixture = '\n'.join([
+                'set -eu', 'log() { :; }',
+                'remove_env_kv() { printf "remove %s\\n" "$2"; }',
+                'upsert_env_kv() { printf "persist %s\\n" "$2"; }',
+                'systemctl() { printf "systemctl %s\\n" "$*" >> "$TEST_CALLS"; }',
+                'ONE_CLICK_ENABLE_S3LVOL=1', 'RUNTIME_ENV_FILE=unused',
+                'start_fixture() {', block, '}', 'start_fixture', 'cat "$TEST_CALLS"',
+            ])
+            env = dict(os.environ, ONE_CLICK_LOGROTATE_BIN=str(p / 'missing'), TEST_CALLS=str(p / 'calls'), PATH=str(p) + os.pathsep + os.environ.get('PATH', ''))
+            result = subprocess.run(['bash', '-c', fixture], env=env, text=True, capture_output=True, check=True)
+            self.assertIn('remove ONE_CLICK_LOGROTATE_BIN', result.stdout)
+            self.assertIn('enable cube-sandbox-s3lvol-logrotate.timer', result.stdout)
+            self.assertNotIn('persist ONE_CLICK_LOGROTATE_BIN', result.stdout)
 
 
 if __name__ == '__main__':

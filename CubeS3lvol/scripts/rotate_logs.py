@@ -7,6 +7,8 @@ import fcntl
 import hashlib
 import json
 import os
+import re
+import sys
 from pathlib import Path
 import shutil
 import stat
@@ -53,11 +55,39 @@ def configuration(log, archive, size, retain):
 
 def resolve_logrotate():
     override = os.environ.get('ONE_CLICK_LOGROTATE_BIN')
-    candidates = [override] if override else [shutil.which('logrotate'), '/usr/sbin/logrotate', '/usr/bin/logrotate']
-    for candidate in candidates:
+    if override and os.path.isfile(override) and os.access(override, os.X_OK):
+        return override
+    if override:
+        print(f'logrotate override is unavailable: {override}; trying system paths', file=sys.stderr)
+    for candidate in (shutil.which('logrotate'), '/usr/sbin/logrotate', '/usr/bin/logrotate'):
         if candidate and os.path.isfile(candidate) and os.access(candidate, os.X_OK):
             return candidate
     raise RuntimeError('logrotate is required')
+
+
+def prune_restart_archives(source, retain):
+    """Apply an explicit retention policy only to rcow_start timestamp archives."""
+    if retain is None:
+        return
+    pattern = re.compile(re.escape(source.name) + r'\.[0-9]{8}-[0-9]{6}~*$')
+    candidates = []
+    for path in source.parent.iterdir():
+        if not pattern.fullmatch(path.name):
+            continue
+        try:
+            info = path.lstat()
+        except FileNotFoundError:
+            continue
+        if stat.S_ISREG(info.st_mode) and info.st_nlink == 1:
+            candidates.append((path, info))
+    candidates.sort(key=lambda item: item[0].name, reverse=True)
+    for path, original in candidates[retain:]:
+        try:
+            current = path.lstat()
+            if stat.S_ISREG(current.st_mode) and current.st_nlink == 1 and (current.st_dev, current.st_ino) == (original.st_dev, original.st_ino):
+                path.unlink()
+        except FileNotFoundError:
+            pass
 
 
 def main(argv=None):
@@ -70,9 +100,11 @@ def main(argv=None):
     parser.add_argument('--size', type=positive, default=256 * 2**20)
     parser.add_argument('--retain', type=positive, default=8)
     parser.add_argument('--bootstrap-limit', type=positive, default=2**30)
-    parser.add_argument('--reserve-bytes', type=positive, default=os.environ.get('RCOW_LOG_RESERVE_BYTES'))
+    parser.add_argument('--reserve-bytes', type=positive, default=os.environ.get('RCOW_LOG_RESERVE_BYTES') or None)
     parser.add_argument('--archive-oversized', action='store_true',
                         help='accept an oversized legacy log after checking archive space')
+    parser.add_argument('--restart-retain', type=positive, default=os.environ.get('RCOW_LOG_RESTART_RETAIN') or None,
+                        help='opt in to retaining this many timestamped restart archives')
     parser.add_argument('--dry-run', action='store_true')
     args = parser.parse_args(argv)
     source = Path(args.log)
@@ -103,6 +135,8 @@ def main(argv=None):
         try:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError:
+            if args.archive_oversized:
+                raise RuntimeError('rotation is already running; wait for it before legacy bootstrap')
             return 0
         accepted = state / (identity + '.accepted')
         if source.stat().st_size > args.bootstrap_limit and not args.archive_oversized and not (state_file.is_file() or accepted.is_file()):
@@ -110,6 +144,7 @@ def main(argv=None):
         # Acceptance survives a failed first rotation; it is separate from
         # logrotate's state format and never created by dry-run.
         accepted.touch(mode=0o600, exist_ok=True)
+        prune_restart_archives(source, args.restart_retain)
         archive.mkdir(mode=0o700, parents=True, exist_ok=True)
         reserve = rotation_reserve(source.stat().st_dev, archive.stat().st_dev, args.reserve_bytes)
         if source.stat().st_size >= args.size:

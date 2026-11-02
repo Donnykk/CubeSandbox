@@ -30,6 +30,7 @@ s3lvol-<version>/
 │   ├── rcow_start.sh rcow_stop.sh rcow_recovery.sh rcow_common.sh
 │   ├── rcow_cpumask.sh               # default SPDK -m (last two allowed CPUs)
 │   ├── rcow_upgrade.sh  rcow_purge.sh  s3lvol_rpc.py  s3_prefix_rm.py
+│   ├── rotate_logs.py              # active-log and optional restart retention
 │   ├── rpc.py         # this repo's launcher (3.8 argparse shim)
 │   ├── rpc_compat.py  # BooleanOptionalAction backfill for Python 3.8
 │   ├── spdk_rpc.py    # SPDK's rpc.py, unmodified
@@ -395,17 +396,25 @@ request header and the canonical string of the SigV4 signature.
 
 When storage is enabled and `logrotate` is installed, one-click enables
 `cube-sandbox-s3lvol-logrotate.timer` alongside the role targets. The timer
-stops with the stack.
+stops with `down.sh`, which also stops an active rotation service. Directly
+stopping a role target leaves the timer running, as during an upgrade.
 It checks the active file every minute, rotating at 256 MiB and retaining eight
 archives (compressed after the next rotation). This is a periodic size check,
 not a strict instantaneous byte ceiling. Archives go to a per-source directory
 under `rotated/` below the log directory. `RCOW_LOG_ARCHIVE_DIR` overrides the
-archive base directory. The `logrotate` executable is required.
+archive base directory. The `logrotate` executable is required. `ONE_CLICK_LOGROTATE_BIN` selects an
+explicit executable; an unavailable override emits a warning and falls back to
+system discovery. Install also removes a stale persisted override.
 
 Rotation uses `copytruncate` to avoid restarting storage or replacing its open
 file descriptor. This has a small concurrent-tail log-loss window; it does not
-discard WAL or volume data. Existing timestamped archives are not deleted by
-this policy. A previously unmanaged active log larger than 1 GiB is deliberately refused:
+discard WAL or volume data. Timestamped restart archives are retained by default. To opt into their
+cleanup, set `RCOW_LOG_RESTART_RETAIN=8` in the service environment or pass
+`--restart-retain 8`. This keeps the newest eight exact rcow timestamp names,
+including collision suffixes, and skips symlinks, hard links, and unrelated
+files. This explicit policy also applies to existing matching archives; dry-run
+never removes them. Cleanup runs before the space guard so opted-in old archives
+can release space for the active log copy. A previously unmanaged active log larger than 1 GiB is deliberately refused:
 stop the timer, run the installed `rotate_logs.py` helper with the same log and
 archive settings and `--archive-oversized`, then verify the archive before
 restarting the timer. The explicit bootstrap option still checks file identity
