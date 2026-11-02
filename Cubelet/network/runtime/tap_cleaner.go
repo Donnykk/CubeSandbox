@@ -249,13 +249,12 @@ func (s *NetworkController) cleanupTapForReuse(ctx context.Context, state *manag
 	}
 	state.tap.PortMappings = append([]PortMapping(nil), state.PortMappings...)
 
-	cleanupErr := errors.Join(
-		s.deleteCubeVSPortMappings(state.SandboxID, state.tap),
-		s.cleanupCubeVSTapState(state.TapIfIndex, net.ParseIP(state.SandboxIP).To4()),
-	)
-	// Policy cleanup can remove the quarantine deny even when another cleanup
-	// step fails. Restore it before returning or waiting on remote readiness.
-	if err := errors.Join(cleanupErr, s.installPoolDefaultDeny(state.tap)); err != nil {
+	portErr := s.deleteCubeVSPortMappings(state.SandboxID, state.tap)
+	policyErr := resetTAPQuarantinePolicy(s.cubevsAdapter, uint32(state.TapIfIndex))
+	if err := errors.Join(portErr, policyErr); err != nil {
+		return err
+	}
+	if err := s.cleanupCubeVSTapMetadata(state.TapIfIndex, net.ParseIP(state.SandboxIP).To4()); err != nil {
 		return err
 	}
 	if err := s.cleanupEgressForReuse(ctx, &state.persistedState, state.legacyStatePath != "" || stateKind == ""); err != nil {

@@ -107,8 +107,8 @@ func TestStartupRecoverStagesNoStateTapForCleanupBeforeReady(t *testing.T) {
 	if !ok || poolState != TapPoolCleaning || owner == "" {
 		t.Fatalf("orphan tap state=%s owner=%s ok=%v before maintenance, want Cleaning", poolState, owner, ok)
 	}
-	if adapter.restoreCount != 0 || len(controller.cubevsAdapter.(*fakeCubeVSAdapter).deletePortMappings) != 1 {
-		t.Fatal("startup must release local port maps while deferring TAP restore and egress cleanup")
+	if adapter.restoreCount != 0 || len(controller.cubevsAdapter.(*fakeCubeVSAdapter).deletePortMappings) != 0 {
+		t.Fatal("startup must defer port-map sweeps, TAP restore, and egress cleanup")
 	}
 	controller.handleCleaningEntries()
 	poolState, owner, ok = controller.tapPool.StateByName(orphan.Name)
@@ -184,7 +184,7 @@ func TestStartupLargeIdlePoolDoesNotRunSynchronousCleanup(t *testing.T) {
 	if err := controller.recover(); err != nil {
 		t.Fatal(err)
 	}
-	if egress.deleteCalls != 0 || base.restoreCount != 0 {
+	if egress.deleteCalls != 0 || base.restoreCount != 0 || len(controller.cubevsAdapter.(*fakeCubeVSAdapter).deletePortMappings) != 0 {
 		t.Fatal("large idle pool performed synchronous TAP cleanup")
 	}
 	entries := controller.tapPool.Entries()
@@ -887,5 +887,49 @@ func TestStartupRefusesUnprotectedOrphanTap(t *testing.T) {
 	state, _, _ := controller.tapPool.StateByName(orphan.Name)
 	if state != TapPoolCleaning {
 		t.Fatalf("unprotected TAP state: %s", state)
+	}
+}
+
+func TestStartupRejectsOrphanWithUnclearedAllowPolicy(t *testing.T) {
+	controller := newRecoverTestController(t)
+	orphan := &tapDevice{Name: tapName("10.30.0.9"), Index: 9, IP: net.ParseIP("10.30.0.9").To4()}
+	controller.tapAdapter.(*fakeTapDeviceAdapter).listResult = map[string]*tapDevice{orphan.Name: orphan}
+	adapter := controller.cubevsAdapter.(*fakeCubeVSAdapter)
+	failure := errors.New("allow policy flush failed")
+	adapter.cleanupPolicyErr = failure
+	if err := controller.recover(); !errors.Is(err, failure) {
+		t.Fatalf("startup accepted unverified isolation: %v", err)
+	}
+	if !adapter.defaultDenyInstalled[9] {
+		t.Fatal("default deny was not attempted after partial cleanup")
+	}
+	state, _, _ := controller.tapPool.StateByName(orphan.Name)
+	if state != TapPoolCleaning {
+		t.Fatalf("unsafe TAP state: %s", state)
+	}
+}
+
+func TestStartupDefersMetadataFailureAfterPolicyIsolation(t *testing.T) {
+	controller := newRecoverTestController(t)
+	orphan := &tapDevice{Name: tapName("10.30.0.9"), Index: 9, IP: net.ParseIP("10.30.0.9").To4()}
+	controller.tapAdapter.(*fakeTapDeviceAdapter).listResult = map[string]*tapDevice{orphan.Name: orphan}
+	adapter := controller.cubevsAdapter.(*fakeCubeVSAdapter)
+	adapter.deleteMetadataErr = errors.New("metadata map unavailable")
+	if err := controller.recover(); err != nil {
+		t.Fatalf("isolated metadata residue prevented startup: %v", err)
+	}
+	if !adapter.defaultDenyInstalled[9] {
+		t.Fatal("metadata failure lost quarantine deny")
+	}
+	controller.handleCleaningEntries()
+	state, _, _ := controller.tapPool.StateByName(orphan.Name)
+	if state != TapPoolCleaning {
+		t.Fatalf("metadata failure exposed %s TAP", state)
+	}
+	adapter.deleteMetadataErr = nil
+	controller.handleCleaningEntries()
+	state, _, _ = controller.tapPool.StateByName(orphan.Name)
+	if state != TapPoolReady {
+		t.Fatalf("metadata retry did not converge: %s", state)
 	}
 }

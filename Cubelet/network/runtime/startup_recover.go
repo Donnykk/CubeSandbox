@@ -456,17 +456,14 @@ func (s *NetworkController) recoverReadyTapWithoutState(tap *tapDevice) error {
 	if err := s.beginTapCleanup(cleaningTap, owner); err != nil {
 		return err
 	}
-	// Keep failed cleanup quarantined for maintenance. CubeVS rejects an
-	// occupied port tuple, so stale mappings cannot silently be reassigned.
-	if err := s.cubevsAdapter.DeletePortMappingsByIfindex(uint32(tap.Index)); err != nil {
-		CubeLog.WithContext(context.Background()).Warnf("defer orphan TAP port cleanup: tap=%s err=%v", tap.Name, err)
+	// Startup must confirm policy isolation: stale allow entries take priority
+	// over default deny. Port-map sweeps are deferred to maintenance; occupied
+	// tuples cannot be silently reassigned by CubeVS.
+	if err := resetTAPQuarantinePolicy(s.cubevsAdapter, uint32(tap.Index)); err != nil {
+		return fmt.Errorf("quarantine orphan TAP: %w", err)
 	}
-	if err := s.cleanupCubeVSTapState(tap.Index, tap.IP.To4()); err != nil {
-		CubeLog.WithContext(context.Background()).Warnf("defer orphan TAP policy cleanup: tap=%s err=%v", tap.Name, err)
-	}
-	// Quarantine must deny traffic even while remote cleanup is unavailable.
-	if err := s.installPoolDefaultDeny(cleaningTap); err != nil {
-		return fmt.Errorf("install orphan TAP default deny: %w", err)
+	if err := s.cleanupCubeVSTapMetadata(tap.Index, tap.IP.To4()); err != nil {
+		CubeLog.WithContext(context.Background()).Warnf("defer orphan TAP metadata cleanup: tap=%s err=%v", tap.Name, err)
 	}
 	// Retain a descriptor if discovery supplied one (production List normally
 	// returns identity only). Do not open or drain a queue during startup. Normal
