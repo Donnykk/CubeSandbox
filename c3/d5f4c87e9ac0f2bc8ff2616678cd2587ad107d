@@ -1,0 +1,29 @@
+docs/guide/redis-cluster-validation.md
+  s_8a65e12e489491::t_14f3900bf48f34 3,26,49-63,145,147-149,151,153,156,158-166,177-358
+docs/guide/redis-cluster-validation/endpoint-reachability.json
+  s_8a65e12e489491::t_ee0f25580c83c8 1-146
+docs/guide/redis-cluster-validation/go-integration.txt
+  s_8a65e12e489491::t_829091582c2d81 1-110
+docs/guide/redis-cluster-validation/helm-render.json
+  s_8a65e12e489491::t_85c7dd6e19b098 1-188
+docs/guide/redis-cluster-validation/sandbox-lifecycle.json
+  s_8a65e12e489491::t_3d6f8f29d507e7 1-169
+docs/guide/redis-cluster.md
+  s_8a65e12e489491::t_0daa50206a596f 77
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "c3d5f4c87e9ac0f2bc8ff2616678cd2587ad107d",
+  "prompts": {},
+  "sessions": {
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
