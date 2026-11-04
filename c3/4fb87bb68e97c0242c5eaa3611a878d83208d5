@@ -1,0 +1,38 @@
+Cubelet/network/runtime/tap_device_test.go
+  s_8a65e12e489491::t_af4a590003f28f 12-30,34,38
+  s_8a65e12e489491::t_3005c847dbfdf1 31-33
+  s_8a65e12e489491::t_9884bc66b43f5c 35-37
+  s_8a65e12e489491::t_c8e527f3e4df82 39-40
+Cubelet/network/runtime/controller.go
+  s_8a65e12e489491::t_fdea4ac96b5e7c 46,48,889
+Cubelet/network/runtime/controller_test.go
+  s_8a65e12e489491::t_647b998e8d9c73 76-79
+Cubelet/network/runtime/startup_recover.go
+  s_8a65e12e489491::t_94c89a1448da7f 442-444,456
+Cubelet/network/runtime/startup_recover_test.go
+  s_8a65e12e489491::t_ab7522886ff673 68-70,142-143,157-159,204-210,895-896,906-935,948-949
+Cubelet/network/runtime/tap_cleaner.go
+  s_8a65e12e489491::t_760ef070dd30a6 230-234,267-276,412
+Cubelet/network/runtime/tap_device.go
+  s_8a65e12e489491::t_3f5f013a8f87d9 40,88-89,122-139
+Cubelet/network/runtime/tap_pool_test.go
+  s_8a65e12e489491::t_9c56413c09d1cb 244-245,261,272-282
+Cubelet/network/runtime/tap_quarantine_policy.go
+  s_8a65e12e489491::t_b0c7472c0f31c5 17-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "c34fb87bb68e97c0242c5eaa3611a878d83208d5",
+  "prompts": {},
+  "sessions": {
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
