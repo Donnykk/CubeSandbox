@@ -1,0 +1,33 @@
+CubeMaster/pkg/service/httpservice/cube/component_version_inject_test.go
+  s_8a65e12e489491::t_461990b13fa7cb 8-10,13,39,42-94
+  s_8a65e12e489491::t_920b4f6d972f06 95
+Cubelet/services/cubebox/component_shim_migration_test.go
+  s_8a65e12e489491::t_cbda794afd9b9b 8,13,126-173
+  s_8a65e12e489491::t_7b2f70affb901a 174
+CubeMaster/pkg/service/httpservice/cube/cubeboxutil.go
+  s_8a65e12e489491::t_0c44a24d5f3365 937-938
+Makefile
+  s_8a65e12e489491::t_fdb0c8edd01385 498
+docs/guide/component-multiversion.md
+  s_8a65e12e489491::t_fc98284f9a8626 18-20
+docs/zh/guide/component-multiversion.md
+  s_8a65e12e489491::t_78e5cfc672e2f7 18-20
+scripts/test-shim-binding.sh
+  s_8a65e12e489491::t_cd8f020ff83596 1-14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "eb33dcd60e7406162fa36d6edd87f0df58b64d4b",
+  "prompts": {},
+  "sessions": {
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
