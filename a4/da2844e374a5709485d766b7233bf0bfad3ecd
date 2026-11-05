@@ -1,0 +1,25 @@
+CubeS3lvol/include/s3lvol/s3_overlay.h
+  s_7f91369258cb80::t_4c60de8720e877 351
+CubeS3lvol/lib/s3bsdev/s3_flusher.c
+  s_7f91369258cb80::t_8ccbea5684505b 68-69,302-303,407,411-412,448
+CubeS3lvol/lib/s3bsdev/s3_overlay.c
+  s_7f91369258cb80::t_5ea7f2a5fa5792 45-47,1133-1134
+CubeS3lvol/test/integration/s3_flush_test.c
+  s_7f91369258cb80::t_b486539c819c90 142-143,174-177,179,1134-1154,1423-1483,1586-1596,1689
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "a4da2844e374a5709485d766b7233bf0bfad3ecd",
+  "prompts": {},
+  "sessions": {
+    "s_7f91369258cb80": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0844a-e9d7-76f1-bc7d-8fc86f13209c",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
