@@ -1,0 +1,57 @@
+Cubelet/network/runtime/tap_device.go
+  s_8a65e12e489491::t_3f5f013a8f87d9 40,88-89,122-139
+Cubelet/network/runtime/startup_recover_test.go
+  s_8a65e12e489491::t_ab7522886ff673 67-69,89-90,110-117,132-213,864-950,955,961
+  s_74fb342aa2fc18::t_f6baa79abeeb5d 65-66,951-954,956-960,962
+Cubelet/network/runtime/controller.go
+  s_8a65e12e489491::t_fdea4ac96b5e7c 46,48,889
+Cubelet/network/runtime/tap_device_test.go
+  s_8a65e12e489491::t_c8e527f3e4df82 39-40
+  s_8a65e12e489491::t_9884bc66b43f5c 35-37
+  s_8a65e12e489491::t_af4a590003f28f 12-30,34,38
+  s_8a65e12e489491::t_3005c847dbfdf1 31-33
+Cubelet/network/runtime/tap_pool_test.go
+  s_8a65e12e489491::t_9c56413c09d1cb 244-245,261,272-282
+Cubelet/network/runtime/tap_cleaner.go
+  s_8a65e12e489491::t_760ef070dd30a6 230-234,250-255,267-275,412
+Cubelet/network/runtime/controller_test.go
+  s_8a65e12e489491::t_647b998e8d9c73 76-79
+Cubelet/network/runtime/startup_recover.go
+  s_8a65e12e489491::t_94c89a1448da7f 442-444,456
+  s_74fb342aa2fc18::t_6b59fb0824db04 26-27,457,459-465
+Cubelet/network/runtime/tap_quarantine_policy.go
+  s_8a65e12e489491::t_b0c7472c0f31c5 17-18
+  s_74fb342aa2fc18::t_a28d142e0977a6 1-16,19-29
+Cubelet/network/runtime/cubevs_adapter_test.go
+  s_74fb342aa2fc18::t_df6877e99bcb35 20-21,85,150-155,157
+Cubelet/network/runtime/tap_cleaner_test.go
+  s_74fb342aa2fc18::t_f4e1caf8550a4f 38,100-101
+Cubelet/network/runtime/tap_lifecycle.go
+  s_74fb342aa2fc18::t_7452870869a5ce 116,167-169,176
+Cubelet/network/runtime/tap_quarantine_policy_test.go
+  s_74fb342aa2fc18::t_d271e3303a395c 1-61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "e9d80e1d0fa4451e814dcbc66302f3f4062fc0de",
+  "prompts": {},
+  "sessions": {
+    "s_74fb342aa2fc18": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08fb5-7ed8-7fa1-9322-6d2b4b11b9a8",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
