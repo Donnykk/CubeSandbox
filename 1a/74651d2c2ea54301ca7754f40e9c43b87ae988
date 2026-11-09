@@ -1,0 +1,38 @@
+CubeTemplateCenter/pkg/build/build_cleanup_test.go
+  s_8a65e12e489491::t_b51b827de10045 1-256
+  s_8a65e12e489491::t_a7b1818bf2f04d 257-259
+CubeTemplateCenter/README.md
+  s_5e2854b02f4d4d::t_7b02e314c14815 13-14
+CubeTemplateCenter/README_EN.md
+  s_5e2854b02f4d4d::t_c4f22468910c12 19-20
+CubeTemplateCenter/README_zh.md
+  s_5e2854b02f4d4d::t_6ffaae8ab696da 19-20
+CubeTemplateCenter/pkg/build/build.go
+  s_5e2854b02f4d4d::t_b22ddb0edc0e2e 128-132,357-363,366-372,387-411,499
+CubeTemplateCenter/pkg/build/s3client.go
+  s_5e2854b02f4d4d::t_d4cbb85358372c 8,23-24,35,59,71-72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "1a74651d2c2ea54301ca7754f40e9c43b87ae988",
+  "prompts": {},
+  "sessions": {
+    "s_5e2854b02f4d4d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a19a39-746b-77f2-885a-a46d4354ad9e",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": null
+    }
+  }
+}
