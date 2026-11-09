@@ -1,0 +1,34 @@
+CubeOps/internal/warehouse/open_test.go
+  s_74fb342aa2fc18::t_8f1b6966395022 10-11,19-29
+  s_74fb342aa2fc18::t_cb077127bbb27b 30-45
+CubeOps/internal/warehouse/adapt.go
+  s_74fb342aa2fc18::t_7059fe0ae3f306 151
+CubeOps/internal/warehouse/blobstore.go
+  s_74fb342aa2fc18::t_392d93a3900e07 45
+CubeOps/internal/warehouse/blobstore_mem.go
+  s_74fb342aa2fc18::t_986f7a867508e1 174-175
+CubeOps/internal/warehouse/open.go
+  s_74fb342aa2fc18::t_12ed840f1f7269 59
+pkgs/blobstore/driver/s3/s3.go
+  s_74fb342aa2fc18::t_d777e8914c88b0 401-408,413,548
+pkgs/blobstore/driver/s3/s3_test.go
+  s_74fb342aa2fc18::t_8e0c21dc2b65b7 52-66
+CubeOps/README.md
+  s_74fb342aa2fc18::t_a88406236cd054 204-208
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "2db8183a8b8f226a2de58fd5a39e940c9705abd2",
+  "prompts": {},
+  "sessions": {
+    "s_74fb342aa2fc18": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08fb5-7ed8-7fa1-9322-6d2b4b11b9a8",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
