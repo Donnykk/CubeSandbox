@@ -1,0 +1,21 @@
+CubeS3lvol/patches/0008-blob-restrict-s3-ingest-copy-to-esnap.patch
+  s_74fb342aa2fc18::t_87d9e19517334c 1-32
+CubeS3lvol/lib/s3bsdev/s3_bs_dev.c
+  s_74fb342aa2fc18::t_b37d52e2d043b9 3193-3194,3941-3942
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "3a2274abd8fcec0d8148917713dca12d443e46cd",
+  "prompts": {},
+  "sessions": {
+    "s_74fb342aa2fc18": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08fb5-7ed8-7fa1-9322-6d2b4b11b9a8",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
