@@ -1,0 +1,35 @@
+Cubelet/pkg/controller/runtemplate/template_manager.go
+  s_909c65de65db59::t_cc5fed4c378fcd 127,399
+Cubelet/services/cubebox/cleanup_template_keep_test.go
+  s_74fb342aa2fc18::t_e409a19f71b459 9,16,129-196
+Cubelet/services/cubebox/template_ops.go
+  s_909c65de65db59::t_a2d0aa7fea1351 866-872
+Cubelet/storage/s3_metadata.go
+  s_909c65de65db59::t_8ea249b4d55fb9 77-80,83-86,88-99,109-110,112,117,123-125,128-129,462,487-488,790,956-959,980-983
+Cubelet/storage/s3_metadata_test.go
+  s_74fb342aa2fc18::t_c04bde44bdd704 128,137,592-639
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "b59c705ec05396ea299c61578bb48ff0dd2647b9",
+  "prompts": {},
+  "sessions": {
+    "s_74fb342aa2fc18": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08fb5-7ed8-7fa1-9322-6d2b4b11b9a8",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_909c65de65db59": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1763f-0c89-7dd2-ae0c-e4a6b4b36f82",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
