@@ -16,6 +16,17 @@ Cubelet/storage/s3_metadata.go
   s_8a65e12e489491::t_459383f72fff4c 957
   s_8a65e12e489491::t_eb51f429e44a5b 959-963
   s_8a65e12e489491::t_917fbdbdb66650 965-967
+  s_909c65de65db59::t_8c8cf1201d819e 947
+  s_909c65de65db59::t_2171d63f20d313 12,18,21,75,77-80,83-141,445-447,449-454,473-475,726-740,747-749,751-757,778-780,941-942,948-949,957-967,969
+Cubelet/pkg/controller/runtemplate/template_manager.go
+  s_909c65de65db59::t_8c8cf1201d819e 357,400-401
+  s_909c65de65db59::t_5d63729c2b66aa 399
+  s_909c65de65db59::t_f9ab36411906d6 127-129
+Cubelet/storage/s3_metadata_test.go
+  s_909c65de65db59::t_9314a915b39744 9-10,12,51,70,76
+Cubelet/pkg/controller/runtemplate/template_manager_test.go
+  s_909c65de65db59::t_8c8cf1201d819e 17,328-365,379-380
+  s_909c65de65db59::t_f9ab36411906d6 366-378
 ---
 {
   "schema_version": "authorship/3.0.0",
@@ -28,6 +39,14 @@ Cubelet/storage/s3_metadata.go
         "tool": "codex",
         "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
         "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_909c65de65db59": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1763f-0c89-7dd2-ae0c-e4a6b4b36f82",
+        "model": "gpt-6.1-sol"
       },
       "human_author": "tangpc <tangpc@chinatelecom.cn>"
     }
