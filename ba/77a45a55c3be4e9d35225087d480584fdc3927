@@ -1,0 +1,102 @@
+CubeS3lvol/test/integration/test_export_registry.py
+  s_909c65de65db59::t_3ab38e6e46b979 1-169
+Cubelet/pkg/controller/runtemplate/template_manager_test.go
+  s_909c65de65db59::t_8c8cf1201d819e 18,303,366-403,417-418
+  s_909c65de65db59::t_6c59415d6bd0d2 14,265,269-302
+  s_909c65de65db59::t_f9ab36411906d6 404-416
+  s_909c65de65db59::t_784c0237795f23 304
+CubeS3lvol/test/integration/test_attach_open.py
+  s_909c65de65db59::t_9408733c091ee4 1-96
+CubeMaster/pkg/scheduler/selctx/selectcontext.go
+  s_74fb342aa2fc18::t_9940d3e21087e0 97,140-143
+Cubelet/pkg/controller/runtemplate/template_manager.go
+  s_909c65de65db59::t_8c8cf1201d819e 347,390-391
+  s_909c65de65db59::t_6cf7c412cd91cd 15,58-61,74,90-114
+  s_909c65de65db59::t_5d63729c2b66aa 389
+CubeMaster/pkg/scheduler/selctx/selectcontext_test.go
+  s_74fb342aa2fc18::t_b186ca0256471c 64-74
+CubeMaster/pkg/restoreplace/placement.go
+  s_74fb342aa2fc18::t_75e91ff3a3b93f 5-7,110,112,114-116,139-187
+docs/guide/cross-node-snapshot.md
+  s_74fb342aa2fc18::t_1d79b56f3e1d31 48,50-51
+CubeMaster/pkg/restoreplace/placement_test.go
+  s_74fb342aa2fc18::t_7d307f8b3e35f7 9,77-100
+docs/zh/guide/cross-node-snapshot.md
+  s_74fb342aa2fc18::t_fdda1da5f6b2d6 59,61-62
+CubeMaster/pkg/service/httpservice/cube/cubeboxutil.go
+  s_74fb342aa2fc18::t_20209c0ea1b82e 39,678-703,728,764-777
+CubeMaster/pkg/service/sandbox/types/types.go
+  s_74fb342aa2fc18::t_967dcfe7b02ea9 66,88-96
+CubeMaster/pkg/scheduler/selctx/random_select.go
+  s_74fb342aa2fc18::t_b4f7a1d07ece8a 26-28
+Cubelet/storage/s3_metadata_test.go
+  s_909c65de65db59::t_9314a915b39744 9-10,12,68,87,93
+  s_909c65de65db59::t_ea15af91bef021 114-116,140-142
+  s_909c65de65db59::t_dbf9eb1c97a54e 101-109,117-139,147-161,169-173
+  s_909c65de65db59::t_6c59415d6bd0d2 15,27-40,113,143,165
+  s_909c65de65db59::t_7479097e2c2e1f 110-112
+  s_909c65de65db59::t_66f888ba8599b4 41-42
+  s_909c65de65db59::t_93262189cc7c90 144-146,162-164
+  s_909c65de65db59::t_3dc66aeeb569b3 166-168
+Cubelet/storage/s3_metadata.go
+  s_909c65de65db59::t_8c8cf1201d819e 964
+  s_909c65de65db59::t_2171d63f20d313 12,18,21,75,77-78,80-81,84-95,98-104,106,108-114,117-144,448-457,477-478,729-743,750-752,754-760,781-783,928-943,958-959,965-966,974-984,986
+  s_909c65de65db59::t_6cf7c412cd91cd 79,96-97,105,107,115-116,476
+CubeMaster/pkg/service/sandbox/snapshot_schedule_test.go
+  s_74fb342aa2fc18::t_c4550fce48eabd 1-32
+CubeS3lvol/lib/s3bsdev/s3_flusher.c
+  s_909c65de65db59::t_901ee19f6e1665 42-49,51-52
+  s_909c65de65db59::t_d05b80d2edbe7e 105,196,273,307-308,353-354,360-380,434-461,520-521,577-581
+CubeS3lvol/module/bdev/s3lvol/vbdev_s3lvol_lvstore.c
+  s_909c65de65db59::t_1381d4f69a6514 89-90,132-133,135-136,1461-1462,1471,1487-1488,1517-1519,1521,1523-1539,1552-1553,2118,2287-2291,2308,2336-2348,2380,2490-2492,2515,2583,2684-2749,2756,2762-2767,2821,2825-2832,2834-2848
+CubeS3lvol/module/bdev/s3lvol/vbdev_s3lvol_xfer.c
+  s_909c65de65db59::t_651ba925fb3eae 63-64,663,676-677,682,811,817,820-823,825,827-830,832-833,835-838,840-843,845-876,883,891,904-911,913,1207-1219,1342,1352-1355,1827,2599-2602,2677,2929,2931-2941,4598
+cubecow/docs/s3lvol-rpc.md
+  s_909c65de65db59::t_a0b5e0e564275c 445
+cubecow/src/engine/s3.rs
+  s_909c65de65db59::t_f6556979e738dd 32,348-382,605-607,637-641,1523-1530,1660-1729,1752,1757-1758,1761-1762,1765,1769
+CubeS3lvol/README.md
+  s_909c65de65db59::t_b70bd9dbfa9a3d 290-305
+CubeS3lvol/include/s3lvol/s3_bs_dev.h
+  s_909c65de65db59::t_1f4139aad6a283 188
+CubeS3lvol/include/s3lvol/s3_flusher.h
+  s_909c65de65db59::t_bdbad256f109cc 122-127
+CubeS3lvol/include/s3lvol/s3_overlay.h
+  s_909c65de65db59::t_d75e0391fda52b 136-137,324-325
+CubeS3lvol/lib/s3bsdev/s3_bs_dev.c
+  s_909c65de65db59::t_e2b229dd1c876b 3193-3194,3941-3942,4124-4138
+CubeS3lvol/lib/s3bsdev/s3_overlay.c
+  s_909c65de65db59::t_5f411de300bb46 90-91,115,173,330,523,808,843,862,869,959-963,997-1002
+CubeS3lvol/module/bdev/s3lvol/vbdev_s3lvol.h
+  s_909c65de65db59::t_cb192f5e1a254f 1123-1127
+CubeS3lvol/module/bdev/s3lvol/vbdev_s3lvol_exports.c
+  s_909c65de65db59::t_5fbabb684474bf 1716,1722,1725-1748,1753,1755-1770,1772-1776,1778-1782,1784-1787,1795,1802,1807-1809,1811,1813
+CubeS3lvol/test/README.md
+  s_909c65de65db59::t_19372564e533a5 14-25
+CubeS3lvol/test/integration/s3_flush_test.c
+  s_909c65de65db59::t_bb70f25e5bc4fc 901-961,1007
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "ba77a45a55c3be4e9d35225087d480584fdc3927",
+  "prompts": {},
+  "sessions": {
+    "s_74fb342aa2fc18": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08fb5-7ed8-7fa1-9322-6d2b4b11b9a8",
+        "model": "unknown"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_909c65de65db59": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1763f-0c89-7dd2-ae0c-e4a6b4b36f82",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": null
+    }
+  }
+}
