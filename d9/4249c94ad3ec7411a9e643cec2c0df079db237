@@ -1,0 +1,35 @@
+Cubelet/storage/s3_metadata.go
+  s_8a65e12e489491::t_afdb4d01edd702 12,18,21,75,77-80,83-125,128,138,140,446,452,474-475,728,732,739,780,958,964
+  s_8a65e12e489491::t_502e5362d2e2c3 126-127
+  s_8a65e12e489491::t_8b01f98826f3a6 129-131,135-137
+  s_8a65e12e489491::t_a8803cfd46f5c8 139
+  s_8a65e12e489491::t_489a2dbd5d2d4b 141
+  s_8a65e12e489491::t_7f0325933d01b2 445
+  s_8a65e12e489491::t_83f12440b529bf 447-451
+  s_8a65e12e489491::t_4de2975f3e4943 453-454
+  s_8a65e12e489491::t_06645f8172fff2 473
+  s_8a65e12e489491::t_0ea01a1985f4d1 726-727
+  s_8a65e12e489491::t_ce07896265b9b2 729-731
+  s_8a65e12e489491::t_860b3f6bbb1b19 733-738
+  s_8a65e12e489491::t_b5e49e8c72a927 740
+  s_8a65e12e489491::t_aa14d0cfb954fb 778-779
+  s_8a65e12e489491::t_459383f72fff4c 957
+  s_8a65e12e489491::t_eb51f429e44a5b 959-963
+  s_8a65e12e489491::t_917fbdbdb66650 965-967
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "d94249c94ad3ec7411a9e643cec2c0df079db237",
+  "prompts": {},
+  "sessions": {
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
