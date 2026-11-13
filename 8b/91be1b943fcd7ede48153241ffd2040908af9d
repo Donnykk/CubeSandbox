@@ -1,0 +1,23 @@
+Cubelet/storage/s3_metadata.go
+  s_909c65de65db59::t_15dac6573d0f5c 436,440
+  s_909c65de65db59::t_79a8ae87fa578b 437-439
+  s_909c65de65db59::t_6858bdabd2f4f0 433-435
+Cubelet/storage/s3_metadata_hotpath_test.go
+  s_909c65de65db59::t_f83d2c700b9fff 1-32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "8b91be1b943fcd7ede48153241ffd2040908af9d",
+  "prompts": {},
+  "sessions": {
+    "s_909c65de65db59": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1763f-0c89-7dd2-ae0c-e4a6b4b36f82",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": null
+    }
+  }
+}
