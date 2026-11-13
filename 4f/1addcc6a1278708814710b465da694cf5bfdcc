@@ -1,0 +1,25 @@
+Cubelet/storage/s3_metadata_concurrency_test.go
+  s_909c65de65db59::t_796b32c56f53d0 183
+  s_909c65de65db59::t_e2262c565cc9d0 1-8,10-19,26-28,30-31,33-74,77-80,82-116,118-174
+  s_909c65de65db59::t_15dac6573d0f5c 9,20-25,29,32,75-76,81,117
+  s_909c65de65db59::t_79a8ae87fa578b 175-182,184-197
+Cubelet/storage/s3_metadata.go
+  s_909c65de65db59::t_15dac6573d0f5c 77-87,100-101,135-136,382-383,412-413,416,425-429,448,455-470,475-479,519-520,622-623,657-658,866-867
+  s_909c65de65db59::t_79a8ae87fa578b 449-454
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "4f1addcc6a1278708814710b465da694cf5bfdcc",
+  "prompts": {},
+  "sessions": {
+    "s_909c65de65db59": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1763f-0c89-7dd2-ae0c-e4a6b4b36f82",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": null
+    }
+  }
+}
