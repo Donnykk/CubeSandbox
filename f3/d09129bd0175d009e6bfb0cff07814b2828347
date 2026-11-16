@@ -1,0 +1,31 @@
+CubeS3lvol/lib/s3bsdev/s3_overlay.c
+  s_8a65e12e489491::t_7591de48bab8ed 131-132,147,149,151-153,226,237-242,1213-1234,1247-1248,1338-1340,1443,1454-1458,1472-1473
+CubeS3lvol/include/s3lvol/s3_overlay.h
+  s_8a65e12e489491::t_7591de48bab8ed 160,336-337,371-373,375-376
+CubeS3lvol/test/integration/s3_flush_test.c
+  s_8a65e12e489491::t_c1e8b518175d3a 36
+  s_8a65e12e489491::t_3c635a78e1186c 50-73,1114-1115,1117-1121,1124,1152,1518-1615,1781,1822-1823
+CubeS3lvol/lib/s3bsdev/s3_flusher.c
+  s_8a65e12e489491::t_7591de48bab8ed 269-271,273,597-598
+  s_8a65e12e489491::t_c1e8b518175d3a 257
+CubeS3lvol/README.md
+  s_8a65e12e489491::t_418173dae8018c 658-671
+CubeS3lvol/include/s3lvol/s3_flusher.h
+  s_8a65e12e489491::t_f17a262ddd702d 148-150
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "f3d09129bd0175d009e6bfb0cff07814b2828347",
+  "prompts": {},
+  "sessions": {
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
