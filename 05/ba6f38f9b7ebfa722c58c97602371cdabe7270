@@ -1,0 +1,43 @@
+CubeS3lvol/include/s3lvol/s3_overlay.h
+  s_7f91369258cb80::t_4c60de8720e877 352
+  s_8a65e12e489491::t_7591de48bab8ed 160,336-337,371-373,375-376
+CubeS3lvol/lib/s3bsdev/s3_flusher.c
+  s_7f91369258cb80::t_8ccbea5684505b 68-69,302-303,407,411-412,448
+  s_8a65e12e489491::t_7591de48bab8ed 269-271,273,597-598
+  s_8a65e12e489491::t_c1e8b518175d3a 257
+CubeS3lvol/lib/s3bsdev/s3_overlay.c
+  s_7f91369258cb80::t_5ea7f2a5fa5792 45-47,1143-1144
+  s_8a65e12e489491::t_7591de48bab8ed 131-132,147,149,151-153,226,237-242,1213-1234,1247-1248,1338-1340,1443,1454-1458,1472-1473
+CubeS3lvol/test/integration/s3_flush_test.c
+  s_7f91369258cb80::t_b486539c819c90 167-168,199-202,204,1168-1188,1457-1517,1718-1728,1821
+  s_8a65e12e489491::t_c1e8b518175d3a 36
+  s_8a65e12e489491::t_3c635a78e1186c 50-73,1114-1115,1117-1121,1124,1152,1518-1615,1781,1822-1823
+CubeS3lvol/README.md
+  s_8a65e12e489491::t_418173dae8018c 698-711
+CubeS3lvol/include/s3lvol/s3_flusher.h
+  s_8a65e12e489491::t_f17a262ddd702d 148-150
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "05ba6f38f9b7ebfa722c58c97602371cdabe7270",
+  "prompts": {},
+  "sessions": {
+    "s_7f91369258cb80": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0844a-e9d7-76f1-bc7d-8fc86f13209c",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
