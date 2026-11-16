@@ -1,0 +1,57 @@
+cubecow/src/engine/s3.rs
+  s_ca595168536e38::t_b49f24ff7e3629 210-211,353,357,415-418,514-517,554-557,611-612,746-749,868-869,871,950,964-967,1058-1059,1061,1072-1082,1102-1105,1138-1141,1190-1193,1288-1291,1363-1365,1376,1403-1408,1799-1802,1847,1849-1859,1861-1866,1870-1875,1878-1879,1881-1883,1885-1898,1915-1918,1953-2073,2194-2195,2216-2217
+  s_ca595168536e38::t_3b9acfa6e6b656 354-356
+  s_ca595168536e38::t_c04b55e3762c56 358
+  s_ca595168536e38::t_3e2b255419ad74 865-867
+  s_ca595168536e38::t_5fbf2fed6b58c4 1060
+  s_ca595168536e38::t_863b1bd768c2c4 208-209
+  s_ca595168536e38::t_f4563e23752c8f 948-949
+  s_ca595168536e38::t_6b275a8fc81c06 2192-2193
+  s_909c65de65db59::t_79f4a3da74b9c8 11,33,98-102,346-349,863-864,876,904-905
+  s_ca595168536e38::t_245981138f8a44 872-873
+  s_ca595168536e38::t_e6e8ff5a2de025 951
+  s_ca595168536e38::t_90349ecc081375 350-352
+  s_ca595168536e38::t_163ee76dd63355 870
+  s_ca595168536e38::t_51e7fb4dbe225a 1062-1063
+  s_909c65de65db59::t_c7d39eaf9fafaf 1860,1867-1869,1876-1877,1880,1884
+  s_ca595168536e38::t_55e84dc0e2ef35 2214-2215
+Cubelet/storage/s3_metadata.go
+  s_909c65de65db59::t_79a8ae87fa578b 452-454,462,466
+  s_909c65de65db59::t_2171d63f20d313 77-78,86-87
+  s_909c65de65db59::t_6cf7c412cd91cd 85
+  s_909c65de65db59::t_15dac6573d0f5c 429,448,467,470,477
+  s_909c65de65db59::t_13f829acd0b09c 79-84,100-101,135-136,382-383,412-413,416,425-428,449-451,455-461,463-465,468-469,475-476,478-479,519-520,622-623,657-658,866-867
+Cubelet/pkg/runtimeprocess/ownership_test.go
+  s_909c65de65db59::t_548afb3e4b5c8d 8
+  s_909c65de65db59::t_70ba25a698e5ec 95-123
+Cubelet/storage/s3_metadata_hotpath_test.go
+  s_909c65de65db59::t_f83d2c700b9fff 1-32
+Cubelet/pkg/runtimeprocess/ownership.go
+  s_909c65de65db59::t_2c8e68751798a3 48-51,53,57-69,103-123,137
+Cubelet/storage/s3_metadata_concurrency_test.go
+  s_909c65de65db59::t_ed3985b8fad761 1-197
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "dfac6531773909029e941f90cbd1635546f23b01",
+  "prompts": {},
+  "sessions": {
+    "s_909c65de65db59": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1763f-0c89-7dd2-ae0c-e4a6b4b36f82",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": null
+    },
+    "s_ca595168536e38": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a167f6-70d8-7171-b53a-dfd8f3a2b37a",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}

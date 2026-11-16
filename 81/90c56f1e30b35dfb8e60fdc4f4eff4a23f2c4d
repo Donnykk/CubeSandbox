@@ -1,0 +1,37 @@
+cubecow/src/engine/s3.rs
+  s_909c65de65db59::t_c7d39eaf9fafaf 1847,1854-1856,1863-1864,1867,1871
+  s_ca595168536e38::t_b49f24ff7e3629 351,1061-1071,1091-1094,1127-1130,1179-1182,1277-1280,1352-1354,1365,1392-1397,1788-1789,1834,1836-1846,1848-1853,1857-1862,1865-1866,1868-1870,1872-1885,1902-1903,1938-2056
+  s_ca595168536e38::t_3b9acfa6e6b656 348-350
+  s_ca595168536e38::t_c04b55e3762c56 352
+Cubelet/storage/s3_metadata.go
+  s_909c65de65db59::t_79a8ae87fa578b 437-439
+  s_909c65de65db59::t_6858bdabd2f4f0 433-435
+  s_909c65de65db59::t_15dac6573d0f5c 436,440
+  s_909c65de65db59::t_cf91f7524517c2 238-239,241-243
+Cubelet/storage/s3_metadata_hotpath_test.go
+  s_909c65de65db59::t_f83d2c700b9fff 1-32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "8190c56f1e30b35dfb8e60fdc4f4eff4a23f2c4d",
+  "prompts": {},
+  "sessions": {
+    "s_909c65de65db59": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1763f-0c89-7dd2-ae0c-e4a6b4b36f82",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": null
+    },
+    "s_ca595168536e38": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a167f6-70d8-7171-b53a-dfd8f3a2b37a",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
