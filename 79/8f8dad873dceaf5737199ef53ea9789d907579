@@ -1,0 +1,49 @@
+CubeMaster/pkg/base/node/node.go
+  s_df852a23dacd90::t_a4f24bbb49cd3f 106-107
+CubeMaster/pkg/cubelet/actions.go
+  s_df852a23dacd90::t_e70cec8c35d0ff 10-11,19,21,45,47-68,238
+CubeMaster/pkg/cubelet/destroy_release_test.go
+  s_df852a23dacd90::t_d4925872709abd 1-96
+CubeMaster/pkg/cubelet/grpcconn/address.go
+  s_df852a23dacd90::t_bb8b37921f654d 1-15
+CubeMaster/pkg/localcache/node_cache.go
+  s_df852a23dacd90::t_596a3ba4067697 247,267,408-414
+CubeMaster/pkg/localcache/redis_cache.go
+  s_df852a23dacd90::t_ed0f948226a3e6 48-49,88-95,119-120,143,145,147,164-165,239-240,336
+CubeMaster/pkg/localcache/resource_release.go
+  s_df852a23dacd90::t_6c2e78c84d285b 1-71
+CubeMaster/pkg/localcache/resource_release_test.go
+  s_df852a23dacd90::t_408ba3807e0abb 1-101
+CubeMaster/pkg/pausesnap/delete_paused.go
+  s_df852a23dacd90::t_596373a725b958 150-153
+CubeMaster/pkg/scheduler/capacity_retry_test.go
+  s_df852a23dacd90::t_b3dac1f546e434 1-131
+CubeMaster/pkg/scheduler/schedule.go
+  s_df852a23dacd90::t_d5d15130c33cb1 8,11,34-71
+CubeMaster/pkg/service/sandbox/destroy_recovery_test.go
+  s_df852a23dacd90::t_8a29f0fb668e9e 20,55-59,71-72,75-77,94-97,104
+CubeMaster/pkg/service/sandbox/sandbox_migrate.go
+  s_df852a23dacd90::t_bc05fa5fe0fca1 21
+CubeMaster/pkg/service/sandbox/sandbox_remove.go
+  s_df852a23dacd90::t_4673e5ee83f382 226-230
+CubeMaster/pkg/task/handlers.go
+  s_df852a23dacd90::t_70886b70104ace 255-258
+docs/zh/guide/cubemaster-scheduler-config.md
+  s_df852a23dacd90::t_255ff0b7af8398 50-61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "798f8dad873dceaf5737199ef53ea9789d907579",
+  "prompts": {},
+  "sessions": {
+    "s_df852a23dacd90": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1e262-184a-7e43-bc3d-3984243853ea",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
