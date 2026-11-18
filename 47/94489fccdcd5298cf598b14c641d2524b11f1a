@@ -1,0 +1,76 @@
+Cubelet/services/cubebox/cleanup_template_keep_test.go
+  s_74fb342aa2fc18::t_e409a19f71b459 9,16,129-196
+Cubelet/services/cubebox/pause_cow_failure_test.go
+  s_8a65e12e489491::t_bd37ae7b6e5b61 1-167
+Cubelet/storage/s3_metadata_test.go
+  s_74fb342aa2fc18::t_f2b67c9fa8ee98 112-115
+  s_74fb342aa2fc18::t_4470c8d406890b 120
+  s_74fb342aa2fc18::t_986fa7be186571 84
+  s_74fb342aa2fc18::t_c04bde44bdd704 85,96,108,111,116,119,121,123-124,126-156,592-639,644-645,647,650,654,657,659,661,665
+  s_74fb342aa2fc18::t_2775139b35026d 86-95
+  s_909c65de65db59::t_9314a915b39744 9-10,12,51,70,76
+  s_74fb342aa2fc18::t_6ffb6da41a5c0b 122
+  s_74fb342aa2fc18::t_f1abf527d77798 117-118
+  s_74fb342aa2fc18::t_cbf9d66b3e0a09 109-110
+  s_74fb342aa2fc18::t_96beed038d7063 125
+  s_74fb342aa2fc18::t_75ade3eab59033 640-642
+  s_74fb342aa2fc18::t_d004bbe3bbbeb8 97-107
+  s_74fb342aa2fc18::t_3ed23c68743ae2 643
+  s_74fb342aa2fc18::t_88d96f48d4c9ae 646
+  s_74fb342aa2fc18::t_21408b0f78af29 648-649
+  s_74fb342aa2fc18::t_d73bf220ee5671 651-653
+  s_74fb342aa2fc18::t_a4458ffd12d01a 655-656
+  s_74fb342aa2fc18::t_e85994d7cf2a7a 658
+  s_74fb342aa2fc18::t_92f0eabf2f7f94 660
+  s_74fb342aa2fc18::t_16f00fa2a4dcf7 662-664
+Cubelet/pkg/controller/runtemplate/template_manager_test.go
+  s_909c65de65db59::t_f9ab36411906d6 366-378
+  s_909c65de65db59::t_8c8cf1201d819e 17,328-365,379-380
+Cubelet/pkg/controller/runtemplate/template_manager.go
+  s_909c65de65db59::t_f9ab36411906d6 128-129
+  s_909c65de65db59::t_8c8cf1201d819e 357,400-401
+  s_909c65de65db59::t_cc5fed4c378fcd 127,399
+Cubelet/storage/s3_metadata.go
+  s_909c65de65db59::t_2171d63f20d313 12,95,98,100-103,105-107,110,113-172,476-485,504-507,758-772,779-781,783-787,807,991,1002
+  s_909c65de65db59::t_8ea249b4d55fb9 77,79-82,85-91,96-97,99,104,108-109,111-112
+  s_909c65de65db59::t_86d5a64d24ee30 92-94
+  s_909c65de65db59::t_72c1c06079b47b 788-789
+  s_909c65de65db59::t_48b6c5999b8ff5 990
+  s_909c65de65db59::t_21d452799a2d5b 1000-1001
+Cubelet/services/cubebox/template_ops.go
+  s_909c65de65db59::t_a2d0aa7fea1351 170-174,960-966
+  s_909c65de65db59::t_9b6c422833c42e 175
+  s_909c65de65db59::t_3596f88e610ee4 169
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "4794489fccdcd5298cf598b14c641d2524b11f1a",
+  "prompts": {},
+  "sessions": {
+    "s_74fb342aa2fc18": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08fb5-7ed8-7fa1-9322-6d2b4b11b9a8",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": null
+    },
+    "s_909c65de65db59": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1763f-0c89-7dd2-ae0c-e4a6b4b36f82",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}

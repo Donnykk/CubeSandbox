@@ -1,0 +1,61 @@
+Cubelet/storage/s3_metadata_test.go
+  s_909c65de65db59::t_9314a915b39744 9-10,12,51,70,76
+  s_74fb342aa2fc18::t_c04bde44bdd704 85,96,108,111,116,119,121,123-124,126-156,592-639
+  s_74fb342aa2fc18::t_986fa7be186571 84
+  s_74fb342aa2fc18::t_2775139b35026d 86-88,93-95
+  s_74fb342aa2fc18::t_d004bbe3bbbeb8 97-99,105-107
+  s_74fb342aa2fc18::t_cbf9d66b3e0a09 109-110
+  s_74fb342aa2fc18::t_f2b67c9fa8ee98 112-115
+  s_74fb342aa2fc18::t_f1abf527d77798 117-118
+  s_74fb342aa2fc18::t_4470c8d406890b 120
+  s_74fb342aa2fc18::t_6ffb6da41a5c0b 122
+  s_74fb342aa2fc18::t_96beed038d7063 125
+  s_74fb342aa2fc18::t_75ade3eab59033 640-642
+Cubelet/pkg/controller/runtemplate/template_manager.go
+  s_909c65de65db59::t_f9ab36411906d6 128-129
+  s_909c65de65db59::t_8c8cf1201d819e 357,400-401
+  s_909c65de65db59::t_cc5fed4c378fcd 127,399
+Cubelet/pkg/controller/runtemplate/template_manager_test.go
+  s_909c65de65db59::t_f9ab36411906d6 366-378
+  s_909c65de65db59::t_8c8cf1201d819e 17,328-365,379-380
+Cubelet/storage/s3_metadata.go
+  s_909c65de65db59::t_2171d63f20d313 12,19,22,77,89,102-110,113,115-118,120-124,128-129,132-172,476-485,504-507,758-772,779-781,783-789,807,810-812,990-991,994-995,1002,1010,1012,1018,1021,1023
+  s_909c65de65db59::t_8ea249b4d55fb9 79-82,85-88,90-101,111-112,114,119,125-127,130-131,1000-1001
+  s_909c65de65db59::t_30141cd76a6ae6 1011
+  s_909c65de65db59::t_cb67a3daa2b8d4 1013-1017
+  s_909c65de65db59::t_e65f178e42e89b 1019-1020
+  s_909c65de65db59::t_a859b81be4a2e0 1022
+  s_909c65de65db59::t_262ea515918ce1 1024
+Cubelet/services/cubebox/template_ops.go
+  s_909c65de65db59::t_a2d0aa7fea1351 170-174,960-966
+  s_909c65de65db59::t_3596f88e610ee4 169
+  s_909c65de65db59::t_9b6c422833c42e 175
+Cubelet/services/cubebox/cleanup_template_keep_test.go
+  s_74fb342aa2fc18::t_e409a19f71b459 9,16,129-196
+Cubelet/services/cubebox/pause_cow_failure_test.go
+  s_909c65de65db59::t_20fcc8121f1748 1-161
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "c602692990afdc4661e1bf1f99771574d8ded106",
+  "prompts": {},
+  "sessions": {
+    "s_74fb342aa2fc18": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08fb5-7ed8-7fa1-9322-6d2b4b11b9a8",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_909c65de65db59": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1763f-0c89-7dd2-ae0c-e4a6b4b36f82",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
