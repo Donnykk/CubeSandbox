@@ -1,0 +1,21 @@
+Cubelet/pkg/runtimeprocess/ownership.go
+  s_df852a23dacd90::t_1e9cdaea343610 48-51,53,57-69,103-123,137
+Cubelet/pkg/runtimeprocess/ownership_test.go
+  s_df852a23dacd90::t_817d4ac7dcfb19 8,95-123
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "ce95147efbd8ae888301ee93b9858da14c0b423e",
+  "prompts": {},
+  "sessions": {
+    "s_df852a23dacd90": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1e262-184a-7e43-bc3d-3984243853ea",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
