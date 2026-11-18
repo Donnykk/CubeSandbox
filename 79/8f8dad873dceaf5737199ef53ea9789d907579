@@ -1,35 +1,68 @@
 CubeMaster/pkg/base/node/node.go
   s_df852a23dacd90::t_a4f24bbb49cd3f 106-107
+  s_7fbda0bc2f8a83::t_2783692d8233ed 106-107
 CubeMaster/pkg/cubelet/actions.go
   s_df852a23dacd90::t_e70cec8c35d0ff 10-11,19,21,45,47-68,238
+  s_7fbda0bc2f8a83::t_84d5c48ebb7682 10-11,19,21,45,47-68,238
 CubeMaster/pkg/cubelet/destroy_release_test.go
   s_df852a23dacd90::t_d4925872709abd 1-96
+  s_7fbda0bc2f8a83::t_6328cbf7b631a2 1-70
+  s_7fbda0bc2f8a83::t_bd302b30476d36 71-73
+  s_7fbda0bc2f8a83::t_9480a46ebf5d2e 74-96
 CubeMaster/pkg/cubelet/grpcconn/address.go
   s_df852a23dacd90::t_bb8b37921f654d 1-15
+  s_7fbda0bc2f8a83::t_84d5c48ebb7682 1-15
 CubeMaster/pkg/localcache/node_cache.go
   s_df852a23dacd90::t_596a3ba4067697 247,267,408-414
+  s_7fbda0bc2f8a83::t_84d5c48ebb7682 247,267,408-414
 CubeMaster/pkg/localcache/redis_cache.go
   s_df852a23dacd90::t_ed0f948226a3e6 48-49,88-95,119-120,143,145,147,164-165,239-240,336
+  s_7fbda0bc2f8a83::t_2e856b33c1d588 48-49,88-95,119-120,143,145,147,164-165,239-240,336
 CubeMaster/pkg/localcache/resource_release.go
   s_df852a23dacd90::t_6c2e78c84d285b 1-71
+  s_7fbda0bc2f8a83::t_abef209e20a709 1-71
 CubeMaster/pkg/localcache/resource_release_test.go
   s_df852a23dacd90::t_408ba3807e0abb 1-101
+  s_7fbda0bc2f8a83::t_1e61f7c06b8ee1 1-91
+  s_7fbda0bc2f8a83::t_d013178f8ddd47 92-94
+  s_7fbda0bc2f8a83::t_6cf1f01b09902c 95-101
 CubeMaster/pkg/pausesnap/delete_paused.go
   s_df852a23dacd90::t_596373a725b958 150-153
 CubeMaster/pkg/scheduler/capacity_retry_test.go
   s_df852a23dacd90::t_b3dac1f546e434 1-131
+  s_7fbda0bc2f8a83::t_af493ef96b7d91 1-131
 CubeMaster/pkg/scheduler/schedule.go
   s_df852a23dacd90::t_d5d15130c33cb1 8,11,34-71
+  s_7fbda0bc2f8a83::t_abef209e20a709 8,11,34-71
 CubeMaster/pkg/service/sandbox/destroy_recovery_test.go
   s_df852a23dacd90::t_8a29f0fb668e9e 20,55-59,71-72,75-77,94-97,104
+  s_74fb342aa2fc18::t_5b7bcccb2797d2 20,55-59,71-72,75-77,94-97,104
 CubeMaster/pkg/service/sandbox/sandbox_migrate.go
   s_df852a23dacd90::t_bc05fa5fe0fca1 21
+  s_7fbda0bc2f8a83::t_ae94aad409fd97 21
 CubeMaster/pkg/service/sandbox/sandbox_remove.go
   s_df852a23dacd90::t_4673e5ee83f382 226-230
 CubeMaster/pkg/task/handlers.go
   s_df852a23dacd90::t_70886b70104ace 255-258
 docs/zh/guide/cubemaster-scheduler-config.md
   s_df852a23dacd90::t_255ff0b7af8398 50-61
+  s_7fbda0bc2f8a83::t_a65b285d734624 50-61
+CubeOps/internal/nodemanagement/nodemetric/resource_release_test.go
+  s_7fbda0bc2f8a83::t_012a98ea7ac6fd 1-35
+  s_7fbda0bc2f8a83::t_2f96b8a2a361ad 36-38
+  s_7fbda0bc2f8a83::t_721ba1a137b690 39-47
+CubeOps/go.mod
+  s_7fbda0bc2f8a83::t_aa0b5c848e90a4 6,104
+CubeOps/go.sum
+  s_7fbda0bc2f8a83::t_c7373afb5e88ff 12-13,211-212
+CubeOps/internal/nodemanagement/nodemetric/redis_metric.go
+  s_7fbda0bc2f8a83::t_4ad9cdf7213e24 26-35,242,244,246,264-265
+Cubelet/services/cubebox/destroy_lifecycle_test.go
+  s_7fbda0bc2f8a83::t_919a809cddec8d 114-120
+Cubelet/services/cubebox/service.go
+  s_7fbda0bc2f8a83::t_72d3142857b65f 620
+pkgs/proto/services/cubebox/v1/utils.go
+  s_7fbda0bc2f8a83::t_900dabd658fcbe 11-15
 ---
 {
   "schema_version": "authorship/3.0.0",
@@ -37,6 +70,22 @@ docs/zh/guide/cubemaster-scheduler-config.md
   "base_commit_sha": "798f8dad873dceaf5737199ef53ea9789d907579",
   "prompts": {},
   "sessions": {
+    "s_74fb342aa2fc18": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08fb5-7ed8-7fa1-9322-6d2b4b11b9a8",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_7fbda0bc2f8a83": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1d453-c16c-7dc1-a7df-559db453643d",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
     "s_df852a23dacd90": {
       "agent_id": {
         "tool": "codex",

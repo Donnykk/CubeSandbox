@@ -16,6 +16,14 @@ docs/zh/guide/cross-node-snapshot.md
         "model": "gpt-6.1-sol"
       },
       "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_b66137482d1d21": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08431-e2bc-7a20-a3dc-30312d47957b",
+        "model": "gpt-6.2-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
     }
   }
 }

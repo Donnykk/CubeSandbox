@@ -1,7 +1,22 @@
 docs/guide/cross-node-snapshot.md
   s_909c65de65db59::t_9490aadf18a260 22-29,34,44
+  s_909c65de65db59::t_a4bd9cc71d1398 22-29,34,44
 docs/zh/guide/cross-node-snapshot.md
   s_909c65de65db59::t_d7a1ed45a6a0dd 31-37,39,53
+  s_74fb342aa2fc18::t_10f52854867b04 31-37,39,53
+deploy/kubernetes/chart/values.yaml
+  s_74fb342aa2fc18::t_87dc6c7fec9f0e 232-237
+CubeMaster/pkg/templatecenter/template_backend_default_test.go
+  s_74fb342aa2fc18::t_3404bf3fbf48a7 1-61
+CubeMaster/pkg/templatecenter/template_backend_default.go
+  s_74fb342aa2fc18::t_3404bf3fbf48a7 1-23,25-38
+  s_74fb342aa2fc18::t_87dc6c7fec9f0e 24
+CubeMaster/cmd/cubemastercli/commands/cubebox/template.go
+  s_909c65de65db59::t_e5e965e00be114 882
+CubeMaster/pkg/service/sandbox/types/types.go
+  s_74fb342aa2fc18::t_755068e9235e4f 716-718
+CubeMaster/pkg/templatecenter/template_image.go
+  s_909c65de65db59::t_0ddcac0c3cd9a7 122
 ---
 {
   "schema_version": "authorship/3.0.0",
@@ -9,6 +24,14 @@ docs/zh/guide/cross-node-snapshot.md
   "base_commit_sha": "d950dc29e63c6b84c1fe64d8d8916b856a615497",
   "prompts": {},
   "sessions": {
+    "s_74fb342aa2fc18": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08fb5-7ed8-7fa1-9322-6d2b4b11b9a8",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
     "s_909c65de65db59": {
       "agent_id": {
         "tool": "codex",

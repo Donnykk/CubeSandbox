@@ -1,7 +1,64 @@
+CubeS3lvol/test/integration/test_verify_active.py
+  s_909c65de65db59::t_cffa97c9565482 30
+  s_909c65de65db59::t_ead61c99549c29 1-29,31-53
+CubeS3lvol/test/integration/test_attach_open.py
+  s_909c65de65db59::t_9408733c091ee4 1-28,31-32,47-51,53-57,63-65,67-69,71-79,82,96-104,108-126
+  s_909c65de65db59::t_991648cfe10504 29-30,33,35-36,39-42,58-59,61-62,66,84-87,89,95
+CubeS3lvol/test/integration/test_export_registry.py
+  s_909c65de65db59::t_3ab38e6e46b979 1-169
+CubeMaster/pkg/restoreplace/placement.go
+  s_74fb342aa2fc18::t_75e91ff3a3b93f 118
+CubeS3lvol/lib/s3bsdev/s3_flusher.c
+  s_909c65de65db59::t_eeca5c6d39ee4f 42-49,51-52
+  s_909c65de65db59::t_9d8666e0d165e9 105,196,273,307-308,353-354,360-380,434-461,520-521,577-581
+CubeS3lvol/README.md
+  s_909c65de65db59::t_ee171c34657847 290-311
+CubeS3lvol/module/bdev/s3lvol/vbdev_s3lvol_lvstore.c
+  s_909c65de65db59::t_41bb9d959db4e0 89-90,132-133,135-137,1462-1463,1472,1477,1482,1492-1493,1505-1506,1535-1555,1558-1559,1571-1572,2137,2306-2310,2327,2355-2367,2399,2509-2511,2534,2602,2703-2768,2775,2781-2786,2840,2844-2851,2853-2867
+CubeS3lvol/module/bdev/s3lvol/vbdev_s3lvol_xfer.c
+  s_909c65de65db59::t_5b6fbac640a6cc 63-64,663,676-677,682,811,817,820-823,825,827-830,832-833,835-838,840-843,845-876,883,891,904-911,913,1207-1219,1342,1352-1355,1827,2599-2602,2677,2929,2931-2941,4598
+CubeS3lvol/scripts/rcow_common.sh
+  s_909c65de65db59::t_f9f575311df96c 1984-2002
+CubeS3lvol/test/README.md
+  s_909c65de65db59::t_79d41f48a1d88a 14-17,22-30
+CubeS3lvol/include/s3lvol/s3_bs_dev.h
+  s_909c65de65db59::t_66984fe6c7cf9a 188
+CubeS3lvol/include/s3lvol/s3_flusher.h
+  s_909c65de65db59::t_c59a91f45cc53f 122-127
+CubeS3lvol/include/s3lvol/s3_overlay.h
+  s_909c65de65db59::t_a477fc3e983088 136-137,324-325
+CubeS3lvol/lib/s3bsdev/s3_bs_dev.c
+  s_909c65de65db59::t_27487828dc60d9 3193-3194,3941-3942,4124-4138
+CubeS3lvol/lib/s3bsdev/s3_overlay.c
+  s_909c65de65db59::t_3e41c8d6717053 90-91,115,173,330,523,808,843,862,869,959-963,997-1002
+CubeS3lvol/module/bdev/s3lvol/vbdev_s3lvol.h
+  s_909c65de65db59::t_562c923b4308af 1123-1127
+CubeS3lvol/module/bdev/s3lvol/vbdev_s3lvol_exports.c
+  s_909c65de65db59::t_06f1d9e443636a 1716,1722,1725-1748,1753,1755-1770,1772-1776,1778-1782,1784-1787,1795,1802,1807-1809,1811,1813
+CubeS3lvol/test/integration/s3_flush_test.c
+  s_909c65de65db59::t_0794bd4b33db8d 901-961,1007
 ---
 {
   "schema_version": "authorship/3.0.0",
   "git_ai_version": "1.6.14",
   "base_commit_sha": "b429469afaf20366bfb7d5980fed156c39f19521",
-  "prompts": {}
+  "prompts": {},
+  "sessions": {
+    "s_74fb342aa2fc18": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08fb5-7ed8-7fa1-9322-6d2b4b11b9a8",
+        "model": "unknown"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_909c65de65db59": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1763f-0c89-7dd2-ae0c-e4a6b4b36f82",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": null
+    }
+  }
 }
