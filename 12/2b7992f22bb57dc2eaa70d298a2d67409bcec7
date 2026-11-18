@@ -1,0 +1,52 @@
+CubeTemplateCenter/pkg/build/build.go
+  s_8a65e12e489491::t_31019ed8b43c5b 127-132,373-376,488,495-498,763-765
+  s_8a65e12e489491::t_3a27e41bb971b0 526-532,534,539,543,545,550,553,555,637-642
+CubeTemplateCenter/pkg/build/build_cleanup_test.go
+  s_8a65e12e489491::t_31019ed8b43c5b 39,41,48,50,119-122,151-153,239-241,284,294-321
+  s_8a65e12e489491::t_a7b1818bf2f04d 285,324
+  s_8a65e12e489491::t_b51b827de10045 1-38,42-47,51-115,117-118,123-150,155-192,194-219,221-224,226-238,242-261,264,283,291-292,325-327
+  s_8a65e12e489491::t_3a27e41bb971b0 40,49,116,154,193,220,225
+  s_74fb342aa2fc18::t_03cf38754f3cdc 262-263,265-282,286-290,293,322-323
+CubeTemplateCenter/pkg/build/s3client.go
+  s_8a65e12e489491::t_31019ed8b43c5b 8,23-25,36,60-61,72-73
+CubeMaster/pkg/templatecenter/image_job_reconciler_test.go
+  s_5e2854b02f4d4d::t_7bf45a6b3806e3 107-119
+CubeTemplateCenter/README.md
+  s_8a65e12e489491::t_e3abaf6e46a010 13-16
+CubeTemplateCenter/README_EN.md
+  s_8a65e12e489491::t_7317ce106d1abf 19-22
+CubeTemplateCenter/README_zh.md
+  s_8a65e12e489491::t_e6fa7a252d9a66 19-22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "122b7992f22bb57dc2eaa70d298a2d67409bcec7",
+  "prompts": {},
+  "sessions": {
+    "s_5e2854b02f4d4d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a19a39-746b-77f2-885a-a46d4354ad9e",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_74fb342aa2fc18": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08fb5-7ed8-7fa1-9322-6d2b4b11b9a8",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": null
+    }
+  }
+}

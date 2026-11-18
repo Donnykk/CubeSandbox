@@ -1,0 +1,78 @@
+pkgs/proto/services/errorcode/v1/errorcode.proto
+  s_8a65e12e489491::t_9d05f3c6ebac1d 61,87
+pkgs/proto/doc/api.md
+  s_909c65de65db59::t_32f5f495c1ab51 2098
+Cubelet/services/cubebox/cube_container_create.go
+  s_8a65e12e489491::t_ac3044a6aff26c 664
+Cubelet/pkg/config/memory_quota_test.go
+  s_8a65e12e489491::t_1580edb13cc446 1-17
+  s_8a65e12e489491::t_b4bd2e5fc21bce 18-22
+Cubelet/services/cubebox/update.go
+  s_8a65e12e489491::t_22133d389802e2 10
+  s_8a65e12e489491::t_956ca89ed633b4 22,177-181,266-268,297-303,314
+Cubelet/pkg/hostquota/quota.go
+  s_8a65e12e489491::t_aacccfd0741e12 1-109
+Cubelet/services/cubebox/admission_test.go
+  s_8a65e12e489491::t_32db6967cf0217 1-181
+CubeMaster/pkg/service/sandbox/sandbox_run.go
+  s_909c65de65db59::t_14bf2e32ad7848 564-575
+  s_8a65e12e489491::t_5ce2fce7fea734 576
+Cubelet/services/cubebox/metric.go
+  s_8a65e12e489491::t_776096cb6ff2ad 118,231
+CubeMaster/pkg/errorcode/exclusions_test.go
+  s_909c65de65db59::t_1299e1792ff2f8 1-26
+CubeMaster/pkg/service/sandbox/sandbox_quota_test.go
+  s_8a65e12e489491::t_32db6967cf0217 1-70
+CubeMaster/pkg/selector/filter/memfilter.go
+  s_909c65de65db59::t_393be8cee9f644 47
+Cubelet/services/cubebox/admission_workflow_test.go
+  s_8a65e12e489491::t_1580edb13cc446 1-117
+  s_8a65e12e489491::t_2c2c5fa122b94e 118-129
+pkgs/proto/services/errorcode/v1/errorcode.pb.go
+  s_8a65e12e489491::t_4860ebedb785d4 79,150,216,321,370-371
+CubeMaster/pkg/errorcode/error.go
+  s_909c65de65db59::t_b81a32f3d26f62 285-287
+docs/node-resource-admission.md
+  s_8a65e12e489491::t_aacccfd0741e12 1-42
+Cubelet/services/cubebox/release_paused_resources_test.go
+  s_909c65de65db59::t_9fa6f605724f75 352-367
+CubeMaster/pkg/selector/filter/resource_boundary_test.go
+  s_909c65de65db59::t_e3aec86cfb2f94 1-54
+CubeMaster/pkg/selector/filter/cpufilter.go
+  s_909c65de65db59::t_a907b65e222862 47
+Cubelet/pkg/cubelet/node_status.go
+  s_909c65de65db59::t_9c8a1431c4e304 22,37,688,692,697,701,705,709,766
+Cubelet/services/cubebox/admission.go
+  s_8a65e12e489491::t_22133d389802e2 1-50,52-111
+  s_8a65e12e489491::t_aacccfd0741e12 51
+Cubelet/pkg/hostquota/quota_test.go
+  s_909c65de65db59::t_e70a67aad3aa42 1-70
+Cubelet/pkg/config/config.go
+  s_8a65e12e489491::t_d3fc396cb97a18 214-215,218-220
+Cubelet/services/cubebox/local.go
+  s_8a65e12e489491::t_45f611b86b5dfa 16,257-263
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "925886d222281ea12a6b086a9129ca1cc079165c",
+  "prompts": {},
+  "sessions": {
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": null
+    },
+    "s_909c65de65db59": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1763f-0c89-7dd2-ae0c-e4a6b4b36f82",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}

@@ -1,0 +1,67 @@
+Cubelet/pkg/hostquota/quota.go
+  s_8a65e12e489491::t_12f3ae60262cf9 1-107
+CubeMaster/pkg/errorcode/error.go
+  s_909c65de65db59::t_b81a32f3d26f62 285-287
+CubeMaster/pkg/errorcode/exclusions_test.go
+  s_909c65de65db59::t_1299e1792ff2f8 1-26
+CubeMaster/pkg/selector/filter/cpufilter.go
+  s_909c65de65db59::t_a907b65e222862 47
+CubeMaster/pkg/selector/filter/memfilter.go
+  s_909c65de65db59::t_393be8cee9f644 47
+CubeMaster/pkg/selector/filter/resource_boundary_test.go
+  s_909c65de65db59::t_e3aec86cfb2f94 1-54
+CubeMaster/pkg/service/sandbox/sandbox_quota_test.go
+  s_909c65de65db59::t_2d23ed153c3659 1-53
+CubeMaster/pkg/service/sandbox/sandbox_run.go
+  s_909c65de65db59::t_14bf2e32ad7848 553-564
+Cubelet/pkg/cubelet/node_status.go
+  s_909c65de65db59::t_9c8a1431c4e304 22,37,688,692,697,701,705,709,766
+Cubelet/pkg/hostquota/quota_test.go
+  s_909c65de65db59::t_e70a67aad3aa42 1-70
+Cubelet/services/cubebox/admission.go
+  s_909c65de65db59::t_2d8b3d033aedc7 1-109
+Cubelet/services/cubebox/admission_test.go
+  s_909c65de65db59::t_8b80d4c9b68c08 1-167
+Cubelet/services/cubebox/release_paused_resources_test.go
+  s_909c65de65db59::t_9fa6f605724f75 352-367
+Cubelet/services/cubebox/update.go
+  s_909c65de65db59::t_e80679b21f63d7 10,22,264,295-301,312
+docs/node-resource-admission.md
+  s_909c65de65db59::t_3ff7d064659c68 1-31
+pkgs/proto/doc/api.md
+  s_909c65de65db59::t_32f5f495c1ab51 2098
+Cubelet/services/cubebox/cube_container_create.go
+  s_8a65e12e489491::t_ac3044a6aff26c 664
+Cubelet/services/cubebox/local.go
+  s_8a65e12e489491::t_674ae6de213b0a 16,257-262
+Cubelet/services/cubebox/metric.go
+  s_8a65e12e489491::t_776096cb6ff2ad 118,231
+pkgs/proto/services/errorcode/v1/errorcode.pb.go
+  s_8a65e12e489491::t_4860ebedb785d4 79,150,216,321,370-371
+pkgs/proto/services/errorcode/v1/errorcode.proto
+  s_8a65e12e489491::t_9d05f3c6ebac1d 61,87
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "b005b30b98c689f81a359da78feb5edd1b4f7ede",
+  "prompts": {},
+  "sessions": {
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_909c65de65db59": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1763f-0c89-7dd2-ae0c-e4a6b4b36f82",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
