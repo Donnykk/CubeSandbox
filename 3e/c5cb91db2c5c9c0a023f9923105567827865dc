@@ -1,0 +1,19 @@
+cubecow/src/engine/s3.rs
+  s_909c65de65db59::t_92a29ae0d38970 32,348-382,605-607,637-641,1523-1530,1660-1729,1752,1757-1758,1761-1762,1765,1769
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "3ec5cb91db2c5c9c0a023f9923105567827865dc",
+  "prompts": {},
+  "sessions": {
+    "s_909c65de65db59": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1763f-0c89-7dd2-ae0c-e4a6b4b36f82",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
