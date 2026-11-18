@@ -1,0 +1,20 @@
+CubeS3lvol/module/bdev/s3lvol/vbdev_s3lvol_lvstore.c
+  s_74fb342aa2fc18::t_802a8dc69cf8c5 89-90
+  s_74fb342aa2fc18::t_e7c4214644a5e9 2111,2280-2283,2300,2359,2469-2471,2494,2562,2663-2728,2735,2741-2746,2800,2804-2811,2813-2827
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "30ccc9c2a4aa5c1143fbd658d6d2e48bc73cc398",
+  "prompts": {},
+  "sessions": {
+    "s_74fb342aa2fc18": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08fb5-7ed8-7fa1-9322-6d2b4b11b9a8",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}

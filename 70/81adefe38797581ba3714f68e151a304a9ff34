@@ -1,0 +1,27 @@
+CubeMaster/pkg/base/wrapredis/cluster_test.go
+  s_8a65e12e489491::t_4c0cbd155a2c65 20
+CubeOps/internal/nodemanagement/nodemetric/cluster_test.go
+  s_8a65e12e489491::t_233cd97a576e22 7,13,27,32,45-74
+cube-lifecycle-manager/internal/redisstream/cluster_test.go
+  s_8a65e12e489491::t_76284c3f976180 22,27,36-59
+CubeProxy/tests/redis_cluster_live_test.lua
+  s_8a65e12e489491::t_48c6fe4eb550ba 58-72,74
+  s_8a65e12e489491::t_77be00aaec4332 38-40,96,104,120-122
+  s_8a65e12e489491::t_636aeb85d0d610 1-37,41-57,73,75-95,97-103,105-119,123-138
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "7081adefe38797581ba3714f68e151a304a9ff34",
+  "prompts": {},
+  "sessions": {
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}

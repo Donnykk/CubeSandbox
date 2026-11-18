@@ -1,0 +1,21 @@
+CubeS3lvol/patches/0008-blob-register-parent-before-recovery-delete.patch
+  s_941c6db3e7761f::t_c90b7608885e58 1-106
+CubeS3lvol/patches/README.md
+  s_941c6db3e7761f::t_8f7ecd5866a21e 18-20,50-54,204,267,312-348
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "aa4ce807070e1eb5f13bc9a55f6b5234a5e170a6",
+  "prompts": {},
+  "sessions": {
+    "s_941c6db3e7761f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a12e0a-b4ad-7c53-af53-905d6b2e7e2b",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}

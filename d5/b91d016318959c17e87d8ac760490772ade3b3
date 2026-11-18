@@ -1,0 +1,21 @@
+Cubelet/cmd/cubelet/state_tmpfs.go
+  s_8a65e12e489491::t_525a767ef3790b 57-60,64
+Cubelet/cmd/cubelet/state_tmpfs_test.go
+  s_8a65e12e489491::t_525a767ef3790b 68-104
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "d5b91d016318959c17e87d8ac760490772ade3b3",
+  "prompts": {},
+  "sessions": {
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}

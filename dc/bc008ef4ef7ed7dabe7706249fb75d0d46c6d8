@@ -1,0 +1,19 @@
+CubeMaster/pkg/base/wrapredis/cluster_test.go
+  s_8a65e12e489491::t_4c0cbd155a2c65 20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "dcbc008ef4ef7ed7dabe7706249fb75d0d46c6d8",
+  "prompts": {},
+  "sessions": {
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}

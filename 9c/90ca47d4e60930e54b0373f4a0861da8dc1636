@@ -1,0 +1,65 @@
+CubeS3lvol/README.md
+  s_8a65e12e489491::t_ceeb0ddea85278 450-453,459-472,480-487
+  s_8a65e12e489491::t_b511913b854652 473-477
+  s_8a65e12e489491::t_53bf1146545e63 478-479
+  s_8a65e12e489491::t_2b3c7f65246309 454-458
+CubeS3lvol/lib/s3bsdev/s3_flusher.c
+  s_8a65e12e489491::t_2b3c7f65246309 62-65,71-72
+  s_7f91369258cb80::t_62400d50ad0bc6 61,233-239,258-264,266-287,294-307,331-332,334,436,440-441,459-465,484,494,631-634
+CubeS3lvol/test/integration/s3_flush_test.c
+  s_8a65e12e489491::t_48ca048032aeef 50-73,237,239,251,1521,1523,1525,1579,1581,1583,1619,1621,1623,1686,1688,1690,1776,1778,1780,1933
+  s_909c65de65db59::t_92c04d9131738b 36,167-168,199-202,204,236,238,240-250,252,852-855,1064-1067,1069-1070,1072-1087,1090-1103,1105,1107-1109,1115-1198,1206-1208,1211-1212,1217-1226,1467-1520,1522,1524,1526-1578,1580,1582,1584-1618,1620,1622,1624-1685,1687,1689,1691-1775,1777,1779,1781-1830,1934-1939,1992,2032-2037
+CubeS3lvol/lib/s3bsdev/s3_overlay.c
+  s_8a65e12e489491::t_27c982bea74c44 45-48
+  s_8a65e12e489491::t_de7b4051807e85 115-119,131-132,147,149,151-153,226,237-242,911-913,915-917,949-955,1152-1154,1223-1244,1250,1256-1258,1289,1346-1353,1446-1506,1527-1531
+CubeS3lvol/include/s3lvol/s3_bs_dev.h
+  s_df852a23dacd90::t_6da6b34cb2cf04 399
+CubeS3lvol/include/s3lvol/s3_flusher.h
+  s_8a65e12e489491::t_871c6fde95a900 34-39,154-156
+CubeS3lvol/include/s3lvol/s3_overlay.h
+  s_909c65de65db59::t_60dacde2b9238e 115-119,165,341-342,345-346,357,376-387
+CubeS3lvol/lib/s3bsdev/s3_bs_dev.c
+  s_df852a23dacd90::t_bdd2c32de54493 5721
+CubeS3lvol/module/bdev/s3lvol/vbdev_s3lvol_rpc.c
+  s_df852a23dacd90::t_a4c1350c865cc0 2034-2035
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "9c90ca47d4e60930e54b0373f4a0861da8dc1636",
+  "prompts": {},
+  "sessions": {
+    "s_7f91369258cb80": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0844a-e9d7-76f1-bc7d-8fc86f13209c",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": null
+    },
+    "s_909c65de65db59": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1763f-0c89-7dd2-ae0c-e4a6b4b36f82",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_df852a23dacd90": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1e262-184a-7e43-bc3d-3984243853ea",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}

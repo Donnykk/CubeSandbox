@@ -1,0 +1,12 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "a0ac6ff33225245259d6872e4d067a1fd8a2c85a",
+  "prompts": {},
+  "humans": {
+    "h_8f8f1253e4d1d3": {
+      "author": "wgcn <wangg48@chinatelecom.cn>"
+    }
+  }
+}

@@ -1,0 +1,65 @@
+.github/workflows/cube-s3lvol-test.yml
+  s_909c65de65db59::t_e4d5c7b728eb30 8,13
+CubeS3lvol/README.md
+  s_909c65de65db59::t_7df28dd671539b 33,411-449
+CubeS3lvol/scripts/prune_restart_logs.py
+  s_909c65de65db59::t_805aff6089781f 1-57
+CubeS3lvol/scripts/rcow_start.sh
+  s_909c65de65db59::t_eca91c6c9f2181 251-254
+CubeS3lvol/test/run_all.sh
+  s_909c65de65db59::t_157549f6428088 368
+CubeS3lvol/test/test_log_rotation.py
+  s_909c65de65db59::t_92e994505214ae 1-319
+deploy/one-click/env.example
+  s_46b901d2d24068::t_89085a817813e6 285-298
+deploy/one-click/install.sh
+  s_46b901d2d24068::t_9fd013dc3ef2b6 1707,1717-1718
+deploy/one-click/scripts/logrotate/cube-sandbox-logrotate.service
+  s_46b901d2d24068::t_703d4fc6098d91 4,10-11
+deploy/one-click/scripts/logrotate/cube-sandbox-logrotate.timer
+  s_46b901d2d24068::t_033f276087f438 4,7
+deploy/one-click/scripts/logrotate/install-logrotate.sh
+  s_909c65de65db59::t_c201502afe802a 5,24-28,82,92,95,97-99,105,110-131,133-150,152-170,172-189,191-192
+deploy/one-click/scripts/logrotate/s3lvol
+  s_909c65de65db59::t_e210df549f6c8c 1-19
+deploy/one-click/scripts/logrotate/s3lvol_policy.py
+  s_909c65de65db59::t_60ced55b4f94f1 1-110
+deploy/one-click/tests/test_cubeshim_logrotate.sh
+  s_46b901d2d24068::t_8075d4cde51523 34,56,75-81,109,208,243
+docs/guide/service-management.md
+  s_909c65de65db59::t_fdc245db8c94e5 302-303,345-415
+CubeS3lvol/make_release.sh
+  s_8a65e12e489491::t_f770a26381a8d4 34,273,275
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "90449bd70326e8fc8be0bd640fc70f26edbe0791",
+  "prompts": {},
+  "sessions": {
+    "s_46b901d2d24068": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1ae4f-ec68-7dd0-b3ce-eeefe37a5e08",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "unknown"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_909c65de65db59": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1763f-0c89-7dd2-ae0c-e4a6b4b36f82",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}

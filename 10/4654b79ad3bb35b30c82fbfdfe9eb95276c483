@@ -1,0 +1,21 @@
+docs/guide/redis-cluster-validation-2026-11-03.md
+  s_8a65e12e489491::t_798d7e04634e3f 1-163
+docs/guide/redis-cluster.md
+  s_8a65e12e489491::t_aeca56a74bc590 62,68-69
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "104654b79ad3bb35b30c82fbfdfe9eb95276c483",
+  "prompts": {},
+  "sessions": {
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}

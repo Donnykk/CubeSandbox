@@ -1,0 +1,232 @@
+CubeS3lvol/patches/README.md
+  s_ca595168536e38::t_9edaaaa25ae08a 50-54
+CubeS3lvol/patches/0008-blob-register-parent-before-recovery-delete.patch
+  s_ca595168536e38::t_c86029344ba560 1-2,4-14,16-49,53-98,100-106
+cubecow/src/engine/s3.rs
+  s_ca595168536e38::t_b49f24ff7e3629 210-211,353,357,415-418,514-517,554-557,611-612,746-749,868-869,871,950,964-967,1058-1059,1061,1072-1082,1107-1109,1111,1119-1122,1155-1158,1207-1210,1305-1308,1380-1382,1393,1420-1425,1816-1819,1848-1863,1864,1865,1866-1876,1878-1883,1887-1892,1895-1896,1898-1900,1902-1915,1916-1931,1932-1935,1936-1969,1970-2090,2211-2212,2233-2234
+  s_909c65de65db59::t_c7d39eaf9fafaf 32,371-405,642-644,674-678,1637-1644,1774-1815,1820-1847,1877,1884-1886,1893-1894,1897,1901
+  s_ca595168536e38::t_c04b55e3762c56 358
+  s_ca595168536e38::t_5fbf2fed6b58c4 1060
+  s_ca595168536e38::t_f4563e23752c8f 948-949
+  s_ca595168536e38::t_3b9acfa6e6b656 354-356
+  s_ca595168536e38::t_863b1bd768c2c4 208-209
+  s_ca595168536e38::t_55e84dc0e2ef35 2231-2232
+  s_ca595168536e38::t_3e2b255419ad74 865-867
+  s_ca595168536e38::t_245981138f8a44 872-873
+  s_ca595168536e38::t_e6e8ff5a2de025 951
+  s_ca595168536e38::t_90349ecc081375 350-352
+  s_ca595168536e38::t_51e7fb4dbe225a 1062-1063
+  s_909c65de65db59::t_79f4a3da74b9c8 11,33,98-102,346-349,863-864,876,904-905
+  s_ca595168536e38::t_6b275a8fc81c06 2209-2210
+  s_ca595168536e38::t_163ee76dd63355 870
+CubeMaster/pkg/scheduler/selctx/selectcontext.go
+  s_74fb342aa2fc18::t_9940d3e21087e0 268,313
+Cubelet/storage/s3_metadata_test.go
+  s_909c65de65db59::t_9314a915b39744 9-10,12,69,104
+  s_909c65de65db59::t_dbf9eb1c97a54e 112-120,128-150,158-172,180-184
+  s_909c65de65db59::t_7479097e2c2e1f 121-123
+  s_909c65de65db59::t_93262189cc7c90 155-157,173-175
+  s_909c65de65db59::t_6c59415d6bd0d2 15,27-40,124,154,176
+  s_909c65de65db59::t_66f888ba8599b4 41-42
+  s_909c65de65db59::t_ea15af91bef021 125-127,151-153
+  s_909c65de65db59::t_3dc66aeeb569b3 177-179
+  s_909c65de65db59::t_68b5bb4f17d1cf 64,77-78,83-84,89-90,94-98
+CubeMaster/pkg/service/sandbox/types/types.go
+  s_74fb342aa2fc18::t_967dcfe7b02ea9 69,104-112
+  s_74fb342aa2fc18::t_755068e9235e4f 761-763
+Cubelet/pkg/controller/runtemplate/template_manager.go
+  s_909c65de65db59::t_8c8cf1201d819e 368,411-412
+  s_909c65de65db59::t_6cf7c412cd91cd 15,62-65,78,94-118
+  s_909c65de65db59::t_5d63729c2b66aa 410
+CubeMaster/pkg/service/sandbox/snapshot_schedule_test.go
+  s_74fb342aa2fc18::t_c4550fce48eabd 1-32
+Cubelet/pkg/controller/runtemplate/template_manager_test.go
+  s_909c65de65db59::t_6c59415d6bd0d2 14,265,269-302
+  s_909c65de65db59::t_f9ab36411906d6 404-416
+  s_909c65de65db59::t_784c0237795f23 304
+  s_909c65de65db59::t_8c8cf1201d819e 18,303,366-403,417-418
+CubeMaster/pkg/service/httpservice/cube/cubeboxutil.go
+  s_74fb342aa2fc18::t_20209c0ea1b82e 42,937-962,988,1026-1039
+CubeMaster/pkg/restoreplace/placement.go
+  s_74fb342aa2fc18::t_75e91ff3a3b93f 5-7,130,132,134-136,163-184,203,205-222
+CubeMaster/pkg/restoreplace/placement_test.go
+  s_74fb342aa2fc18::t_7d307f8b3e35f7 9,87-110
+CubeShim/shim/src/sandbox/sb.rs
+  s_909c65de65db59::t_8d8b99ebcaf03c 90-104,2457
+  s_909c65de65db59::t_15ac9f4000c84e 614,629-635,646-652,668,671,678,681,686,687-690,692-708,710-712,714-716,718-720,722-727,729-732,735-738,742-743,2444,2448-2456,2458-2461
+CubeMaster/pkg/scheduler/selctx/random_select.go
+  s_74fb342aa2fc18::t_b4f7a1d07ece8a 29,31
+Cubelet/storage/s3_metadata.go
+  s_909c65de65db59::t_8c8cf1201d819e 1083
+  s_909c65de65db59::t_2171d63f20d313 12,19,22,76,78-79,88-89,92-101,104-105,108-114,116,118-124,127-136,139-156,551-560,582-583,838,840-842,850,852-860,867-869,871-877,898-900,1047-1062,1077-1078,1084-1085,1093-1103,1105
+  s_909c65de65db59::t_6cf7c412cd91cd 87,106-107,115,117,125-126,581
+  s_909c65de65db59::t_13f829acd0b09c 80-85,102-103,137-138,384-385,414-415,418,427-430,451-453,457-463,465-467,470-471,477,577-578,680-681,715-716,932-933
+  s_909c65de65db59::t_dd0516cde8600d 86,480-490,502,517-541,834,836,839,843-849,851
+  s_909c65de65db59::t_aa922a4cd11092 15,491-501,503-516
+  s_909c65de65db59::t_79a8ae87fa578b 454-456,464,468
+  s_909c65de65db59::t_15dac6573d0f5c 431,450,469,472
+CubeS3lvol/lib/s3bsdev/s3_flusher.c
+  s_909c65de65db59::t_eeca5c6d39ee4f 46
+CubeMaster/pkg/scheduler/selctx/selectcontext_test.go
+  s_74fb342aa2fc18::t_b186ca0256471c 64,116
+CubeS3lvol/module/bdev/s3lvol/vbdev_s3lvol_lvstore.c
+  s_909c65de65db59::t_41bb9d959db4e0 97,1678,1769-1771,1773,1788,2976,2979-2985,3099-3100
+CubeS3lvol/module/bdev/s3lvol/vbdev_s3lvol_xfer.c
+  s_909c65de65db59::t_5b6fbac640a6cc 805,814,816-817,821,846-847,849-850,853,856,871,889-890,893,1416-1418,1422,4210,4232
+CubeS3lvol/scripts/rcow_common.sh
+  s_909c65de65db59::t_f9f575311df96c 2341-2359
+CubeS3lvol/test/README.md
+  s_909c65de65db59::t_79d41f48a1d88a 17,19-20,24
+  s_df852a23dacd90::t_2d36311ec0f37c 14-16,18,21-23
+cubecow/docs/s3lvol-rpc.md
+  s_909c65de65db59::t_14cd90bda98d0c 445
+CubeS3lvol/include/s3lvol/s3_flusher.h
+  s_909c65de65db59::t_c59a91f45cc53f 182
+CubeS3lvol/lib/s3bsdev/s3_bs_dev.c
+  s_909c65de65db59::t_27487828dc60d9 5163,5166-5174,5217-5218
+CubeS3lvol/module/bdev/s3lvol/vbdev_s3lvol_exports.c
+  s_909c65de65db59::t_06f1d9e443636a 1654,1657,1659,1663-1667,1688,1695-1696,1740,1752,1754,1756,1758-1759,1775,1781,1783-1784
+CubeS3lvol/test/integration/s3_flush_test.c
+  s_909c65de65db59::t_0794bd4b33db8d 1280,1282-1284,1303,1312,1318,1335-1336,1371,1385,1417-1421
+CubeShim/README.md
+  s_909c65de65db59::t_5373fdae917050 28-34
+deploy/kubernetes/chart/values.yaml
+  s_74fb342aa2fc18::t_87dc6c7fec9f0e 262-267
+CubeMaster/pkg/templatecenter/template_backend_default_test.go
+  s_74fb342aa2fc18::t_3404bf3fbf48a7 1-20,23-63
+CubeMaster/pkg/templatecenter/template_backend_default.go
+  s_74fb342aa2fc18::t_3404bf3fbf48a7 1-23,25-31,33-35,37-38
+  s_74fb342aa2fc18::t_87dc6c7fec9f0e 24
+CubeMaster/pkg/templatecenter/template_image.go
+  s_909c65de65db59::t_0ddcac0c3cd9a7 122
+Cubelet/storage/s3_metadata_hotpath_test.go
+  s_909c65de65db59::t_f83d2c700b9fff 1-32
+Cubelet/storage/s3_metadata_concurrency_test.go
+  s_909c65de65db59::t_ed3985b8fad761 1-7,10-90,93-94,96-97,99,108-121,123-132,134-183,219-242
+  s_909c65de65db59::t_4e968e26ed6058 91-92,95,98,100-107,122,133
+  s_909c65de65db59::t_e4c01a6fd5330d 8-9,184-218
+CubeMaster/pkg/cubelet/actions.go
+  s_7fbda0bc2f8a83::t_84d5c48ebb7682 10-11,19,21,45,47-68,238
+CubeMaster/pkg/cubelet/grpcconn/address.go
+  s_7fbda0bc2f8a83::t_84d5c48ebb7682 1-15
+CubeMaster/pkg/scheduler/capacity_retry_test.go
+  s_7fbda0bc2f8a83::t_af493ef96b7d91 1-17,19,21-54,69-70,71-142
+CubeOps/internal/nodemanagement/nodemetric/resource_release_test.go
+  s_7fbda0bc2f8a83::t_012a98ea7ac6fd 1-35
+  s_7fbda0bc2f8a83::t_2f96b8a2a361ad 36-38
+  s_7fbda0bc2f8a83::t_721ba1a137b690 39-47
+CubeMaster/pkg/localcache/resource_release.go
+  s_7fbda0bc2f8a83::t_abef209e20a709 1-71
+CubeMaster/pkg/scheduler/schedule.go
+  s_7fbda0bc2f8a83::t_abef209e20a709 8,16,36-69
+CubeMaster/pkg/localcache/node_cache.go
+  s_7fbda0bc2f8a83::t_84d5c48ebb7682 244,264,405-411
+CubeMaster/pkg/cubelet/destroy_release_test.go
+  s_7fbda0bc2f8a83::t_6328cbf7b631a2 1-70
+  s_7fbda0bc2f8a83::t_bd302b30476d36 71-73
+  s_7fbda0bc2f8a83::t_9480a46ebf5d2e 74-96
+CubeOps/go.mod
+  s_7fbda0bc2f8a83::t_aa0b5c848e90a4 7,106
+CubeMaster/pkg/localcache/resource_release_test.go
+  s_7fbda0bc2f8a83::t_1e61f7c06b8ee1 1-91
+  s_7fbda0bc2f8a83::t_d013178f8ddd47 92-94
+  s_7fbda0bc2f8a83::t_6cf1f01b09902c 95-101
+CubeMaster/pkg/service/sandbox/destroy_recovery_test.go
+  s_74fb342aa2fc18::t_5b7bcccb2797d2 20,55-59,71-72,75-77,94-97,104
+docs/zh/guide/cubemaster-scheduler-config.md
+  s_7fbda0bc2f8a83::t_a65b285d734624 33,35,37,39
+CubeMaster/pkg/base/node/node.go
+  s_7fbda0bc2f8a83::t_2783692d8233ed 106-107
+CubeMaster/pkg/localcache/redis_cache.go
+  s_7fbda0bc2f8a83::t_2e856b33c1d588 48-49,88-95,119-120,143,145,147,164-165,239-240,336
+CubeMaster/pkg/service/sandbox/sandbox_migrate.go
+  s_7fbda0bc2f8a83::t_ae94aad409fd97 21
+CubeOps/go.sum
+  s_7fbda0bc2f8a83::t_c7373afb5e88ff 12-13,215-216
+CubeOps/internal/nodemanagement/nodemetric/redis_metric.go
+  s_7fbda0bc2f8a83::t_4ad9cdf7213e24 27-36,273,275,277,295-296
+Cubelet/services/cubebox/destroy_lifecycle_test.go
+  s_7fbda0bc2f8a83::t_919a809cddec8d 114-120
+Cubelet/services/cubebox/service.go
+  s_7fbda0bc2f8a83::t_72d3142857b65f 769
+pkgs/proto/services/cubebox/v1/utils.go
+  s_7fbda0bc2f8a83::t_900dabd658fcbe 11-15
+CubeS3lvol/test/tools/test_attach_examine.py
+  s_df852a23dacd90::t_d8115b4d3b75c1 1-115
+paas-docs/operations/upgrade-v0.8.0.md
+  s_df852a23dacd90::t_6234bdede77798 1-34,36-38,40,42-43,45-49
+  s_df852a23dacd90::t_f15492d50fbd73 35,41,44
+  s_df852a23dacd90::t_293a80e1091c53 39
+CubeAPI/src/routes.rs
+  s_df852a23dacd90::t_2d36311ec0f37c 9-10,12,22-25,28,75,82-83,105
+CubeTemplateCenter/pkg/build/reporter_trace_test.go
+  s_df852a23dacd90::t_1a8e5142af051d 1-191
+CubeAPI/src/services/sandboxes.rs
+  s_df852a23dacd90::t_5133e82430f47f 1820-1822,1859-1861,1866,1870-1871,2278,2282,2295-2296,2316-2318,3673-3701,4368-4369,4411,6229,6234,6309-6313
+pkgs/redisx/context_test.go
+  s_df852a23dacd90::t_f03ef4d21df99d 1-77
+paas-docs/README.md
+  s_df852a23dacd90::t_6234bdede77798 1-58
+deploy/one-click/tests/test_toggle_inputs.sh
+  s_df852a23dacd90::t_c7995ba669a407 222-236,328
+CubeAPI/src/cubemaster/mod.rs
+  s_df852a23dacd90::t_40dbe9df4e82db 66-67,71,163-164,168,251-252,256,329-330,334,436-437,441
+pkgs/redisx/cluster.go
+  s_df852a23dacd90::t_6fa0c87eaba983 8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "8bd7ec004f586324406ad2a4088ca50bdf410ea4",
+  "prompts": {},
+  "sessions": {
+    "s_74fb342aa2fc18": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08fb5-7ed8-7fa1-9322-6d2b4b11b9a8",
+        "model": "unknown"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_7fbda0bc2f8a83": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1d453-c16c-7dc1-a7df-559db453643d",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_909c65de65db59": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1763f-0c89-7dd2-ae0c-e4a6b4b36f82",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": null
+    },
+    "s_ca595168536e38": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a167f6-70d8-7171-b53a-dfd8f3a2b37a",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_df852a23dacd90": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1e262-184a-7e43-bc3d-3984243853ea",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}

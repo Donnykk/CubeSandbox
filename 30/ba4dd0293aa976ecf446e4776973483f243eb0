@@ -1,0 +1,63 @@
+CubeMaster/pkg/templatecenter/store.go
+  s_74fb342aa2fc18::t_d2c705af1ae4b5 494-498
+CubeMaster/pkg/service/sandbox/id_resolve.go
+  s_74fb342aa2fc18::t_8bd7f5328f1d9b 10,49-58
+CubeMaster/pkg/templatecenter/snapshot_ops.go
+  s_74fb342aa2fc18::t_e96ce2328dedd6 1587
+CubeMaster/pkg/templatecenter/snapshot_reconciler.go
+  s_74fb342aa2fc18::t_670ccbc66307a3 131-133,204-229
+CubeMaster/pkg/service/sandbox/sandbox_remove.go
+  s_8a65e12e489491::t_5836550c553373 9,23
+  s_74fb342aa2fc18::t_edf735ef41a1cc 50-54,122-132,181,191-198,200-202,221,237-239,262-266
+CubeMaster/Makefile
+  s_74fb342aa2fc18::t_754e2bc04779f5 136
+CubeMaster/pkg/templatecenter/job_repo.go
+  s_74fb342aa2fc18::t_147b5704c0eb11 250,261-271,289,312,339
+CubeMaster/pkg/templatecenter/artifact_lifecycle.go
+  s_74fb342aa2fc18::t_0f14b9050b0062 9,96-102,104-105,108,193,273
+CubeMaster/pkg/service/sandbox/id_resolve_unavailable_test.go
+  s_8a65e12e489491::t_5836550c553373 1-72
+CubeMaster/pkg/service/sandbox/sandbox_info.go
+  s_74fb342aa2fc18::t_ac37633a0f36fe 149,166,174
+docs/master-lifecycle-recovery.md
+  s_8a65e12e489491::t_5836550c553373 1-28
+CubeMaster/pkg/task/handlers.go
+  s_74fb342aa2fc18::t_8ea715060035bf 276-278,281-283
+CubeMaster/pkg/service/sandbox/webhook_updates_destruction_test.go
+  s_8a65e12e489491::t_d34007f9ca9721 20,271,286-291,319-330,458,486-487,502-506
+CubeMaster/pkg/service/sandbox/sandbox_remove_test.go
+  s_8a65e12e489491::t_9e48900e6ff0da 18
+  s_74fb342aa2fc18::t_d78badbb9a9cc7 47-49,65-99
+CubeMaster/pkg/sandboxspec/store.go
+  s_74fb342aa2fc18::t_de046b0cd7cce1 68-80,404-425,436-442
+CubeMaster/pkg/service/httpservice/cube/snapshot_worker_error_test.go
+  s_8a65e12e489491::t_9e48900e6ff0da 1-44
+CubeMaster/pkg/errorcode/error.go
+  s_74fb342aa2fc18::t_8f5be6bc83e2f5 54,75
+CubeMaster/pkg/service/httpservice/cube/snapshot.go
+  s_74fb342aa2fc18::t_a8cb12cfd77e4e 740-741,761-766,797-798
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "30ba4dd0293aa976ecf446e4776973483f243eb0",
+  "prompts": {},
+  "sessions": {
+    "s_74fb342aa2fc18": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08fb5-7ed8-7fa1-9322-6d2b4b11b9a8",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": null
+    }
+  }
+}

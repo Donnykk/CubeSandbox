@@ -1,0 +1,73 @@
+CubeMaster/pkg/base/constants/constants.go
+  s_2bd008be0e0ac2::t_b34d434d69e833 119
+CubeMaster/pkg/templatecenter/artifact_cache.go
+  s_2bd008be0e0ac2::t_6e98a8f5b6b654 1-17
+CubeMaster/pkg/templatecenter/artifact_cache_test.go
+  s_2bd008be0e0ac2::t_764979ae434f75 1-22
+CubeMaster/pkg/templatecenter/distribution.go
+  s_2bd008be0e0ac2::t_1f6ff81e0d7c67 206
+CubeMaster/pkg/templatecenter/template_request.go
+  s_2bd008be0e0ac2::t_4a7f0bbcaeee23 69
+Cubelet/config/config.toml
+  s_2bd008be0e0ac2::t_895b599f37fe20 168-177
+Cubelet/internal/cube/server/images/ext4image/cache_gc.go
+  s_2bd008be0e0ac2::t_9d4adf0b4e2ead 1-347
+Cubelet/internal/cube/server/images/ext4image/cache_gc_test.go
+  s_2bd008be0e0ac2::t_914370a62c1b83 1-266
+Cubelet/internal/cube/server/images/ext4image/cache_source.go
+  s_2bd008be0e0ac2::t_dc1de76b22aa11 1-266
+Cubelet/internal/cube/server/images/ext4image/destroy.go
+  s_2bd008be0e0ac2::t_1de52fea1a75f7 54-58
+Cubelet/internal/cube/server/images/ext4image/utils.go
+  s_2bd008be0e0ac2::t_8b49476ccac5b5 18,33-37,56-60,76,87-90,94-114,129,131,136-139,145-157,172-175,187,197-199,305-313
+Cubelet/pkg/constants/const.go
+  s_2bd008be0e0ac2::t_d3c7ef08322f13 248
+Cubelet/pkg/container/pmem/cache_lease.go
+  s_2bd008be0e0ac2::t_db2584aaef3551 1-79
+Cubelet/pkg/container/pmem/cache_lease_test.go
+  s_2bd008be0e0ac2::t_d41c6ce582aa9e 1-46
+Cubelet/pkg/store/cubebox/cubebox.go
+  s_2bd008be0e0ac2::t_0d31dcec4f14df 355-359
+Cubelet/pkg/store/cubebox/store_test.go
+  s_2bd008be0e0ac2::t_0162ab1a1fc4c2 76-95
+Cubelet/plugins/cube/internals/cubes/local.go
+  s_2bd008be0e0ac2::t_3db9fad826a639 13,34-35,68,77-79
+Cubelet/plugins/cube/internals/cubes/restart.go
+  s_2bd008be0e0ac2::t_572c92da3c2874 25-26,39,51,71,76
+Cubelet/plugins/workflow/engine.go
+  s_2bd008be0e0ac2::t_4ee4b85e00c483 24,610-633
+Cubelet/services/images/service.go
+  s_2bd008be0e0ac2::t_79529e41be766d 42-43,133-144
+docs/.vitepress/config.mjs
+  s_2bd008be0e0ac2::t_48cdc6573dc51f 354-355,572-573
+docs/dev/index.md
+  s_2bd008be0e0ac2::t_142439d767ef25 13-14
+docs/dev/rootfs-cache-gc.md
+  s_2bd008be0e0ac2::t_9f56762eacc6a8 1-57
+docs/dev/templatecenter-design.md
+  s_2bd008be0e0ac2::t_c38397ec57c9ab 233-236
+docs/zh/dev/index.md
+  s_2bd008be0e0ac2::t_0fc411c4f364de 13-14
+docs/zh/dev/rootfs-cache-gc.md
+  s_2bd008be0e0ac2::t_e71a8a21e44ea8 1-56
+docs/zh/dev/templatecenter-design.md
+  s_2bd008be0e0ac2::t_6073f271ac9995 219-220
+scripts/export_rootfs_cache_sources.py
+  s_2bd008be0e0ac2::t_612c4ae7fff621 1-71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "f57148ed09cd68700ae56f402d2a792b371e14d9",
+  "prompts": {},
+  "sessions": {
+    "s_2bd008be0e0ac2": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09f45-ea9e-7a13-8fd7-b3b6e53d1e2e",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}

@@ -1,0 +1,50 @@
+CubeTemplateCenter/pkg/build/build_cleanup_test.go
+  s_8a65e12e489491::t_b51b827de10045 1-38,41-46,49-86,88-115,120-147,152-161,166,169-196,207-235,239-258,261,280,288-289,322-324
+  s_8a65e12e489491::t_31019ed8b43c5b 39-40,47-48,116-119,148-150,236-238,281,291-318
+  s_8a65e12e489491::t_a7b1818bf2f04d 282,321
+  s_74fb342aa2fc18::t_03cf38754f3cdc 259-260,262-279,283-287,290,319-320
+CubeTemplateCenter/pkg/build/s3client.go
+  s_8a65e12e489491::t_31019ed8b43c5b 8,23-25,36,60-61,72-73
+CubeTemplateCenter/pkg/build/build.go
+  s_8a65e12e489491::t_31019ed8b43c5b 127-132,368-369,393,399-400,488,747-749
+CubeMaster/pkg/templatecenter/image_job_reconciler_test.go
+  s_5e2854b02f4d4d::t_2cc5c27ef4d8b3 107-119
+CubeTemplateCenter/README.md
+  s_5e2854b02f4d4d::t_d45f19d98baf8b 14,16
+CubeTemplateCenter/README_EN.md
+  s_5e2854b02f4d4d::t_60388cbb656f02 20,22
+CubeTemplateCenter/README_zh.md
+  s_5e2854b02f4d4d::t_fa810e4f859b45 20,22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "862d484de6c4307951c03e180927551aba598a58",
+  "prompts": {},
+  "sessions": {
+    "s_5e2854b02f4d4d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a19a39-746b-77f2-885a-a46d4354ad9e",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_74fb342aa2fc18": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08fb5-7ed8-7fa1-9322-6d2b4b11b9a8",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": null
+    }
+  }
+}

@@ -1,0 +1,22 @@
+Cubelet/storage/s3_metadata.go
+  s_909c65de65db59::t_15dac6573d0f5c 77-87,100-101,135-136,382-383,412-416,428-432,451-467,472-476,516-517,619-620,654-655,863-864
+Cubelet/storage/s3_metadata_concurrency_test.go
+  s_909c65de65db59::t_e2262c565cc9d0 1-8,10-19,26-28,30-31,33-74,77-80,82-116,118-174
+  s_909c65de65db59::t_15dac6573d0f5c 9,20-25,29,32,75-76,81,117
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "93571e693c77e730c97ff77e24bec0b32ebbb0f6",
+  "prompts": {},
+  "sessions": {
+    "s_909c65de65db59": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1763f-0c89-7dd2-ae0c-e4a6b4b36f82",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}

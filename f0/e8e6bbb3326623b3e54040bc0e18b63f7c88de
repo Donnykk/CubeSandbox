@@ -1,0 +1,28 @@
+Cubelet/cmd/cubelet/state_tmpfs.go
+  s_8a65e12e489491::t_9f07d55457f70e 17
+  s_8a65e12e489491::t_d1c365b3b4b86b 64-68,122,124,126-132,134,136,138,142-144,148
+Cubelet/cmd/cubelet/root_shared_mount.go
+  s_8a65e12e489491::t_15f0690596d7b7 1-57
+Cubelet/cmd/cubelet/state_tmpfs_test.go
+  s_8a65e12e489491::t_15f0690596d7b7 8,12,23,39-41,46-50,61-62,214-299
+Cubelet/cmd/cubelet/root_shared_mount_test.go
+  s_8a65e12e489491::t_40dbc803a5ac55 8,56,69-70,72-73,80-82,97-124
+Makefile
+  s_8a65e12e489491::t_a45915df22fdad 509
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "f0e8e6bbb3326623b3e54040bc0e18b63f7c88de",
+  "prompts": {},
+  "sessions": {
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}

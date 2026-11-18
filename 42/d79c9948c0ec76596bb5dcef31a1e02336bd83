@@ -1,0 +1,45 @@
+CubeS3lvol/lib/s3bsdev/s3_overlay.c
+  s_7f91369258cb80::t_4f1b23ba58e276 45-48,115-117
+  s_7f91369258cb80::t_f55dcf29bc31af 118-119,131-132,147,149,151-153,226,237-242,911-913,946-952,1149-1151,1220-1241,1247,1253-1255,1286,1343-1350,1443-1484,1505-1509
+CubeS3lvol/README.md
+  s_8a65e12e489491::t_ceeb0ddea85278 450-451,456-467,470-475
+  s_8a65e12e489491::t_2b3c7f65246309 452-455,468-469
+CubeS3lvol/include/s3lvol/s3_bs_dev.h
+  s_7f91369258cb80::t_34eca8420a0cbb 399
+CubeS3lvol/include/s3lvol/s3_flusher.h
+  s_7f91369258cb80::t_51982fbc513f38 34-39,154-156
+CubeS3lvol/include/s3lvol/s3_overlay.h
+  s_7f91369258cb80::t_75a9ca12aa8a55 115-119,165,341-342,357,376-384
+CubeS3lvol/lib/s3bsdev/s3_bs_dev.c
+  s_7f91369258cb80::t_3c94a6c8b5ba08 5721
+CubeS3lvol/lib/s3bsdev/s3_flusher.c
+  s_7f91369258cb80::t_e81fffb5d3f1e9 61-62,68-69,248-254,256-268,275-284,308-309,311,413,417-418,454,464-465,602-605
+CubeS3lvol/module/bdev/s3lvol/vbdev_s3lvol_rpc.c
+  s_7f91369258cb80::t_7d4dd5dd22227f 2034-2035
+CubeS3lvol/test/integration/s3_flush_test.c
+  s_7f91369258cb80::t_04aae43a96cd0d 36,50-73,167-168,199-202,204,236-252,1060-1062,1064-1065,1067-1080,1083-1094,1097,1103-1188,1196-1198,1201-1202,1207-1216,1457-1682,1785-1791,1844,1884-1887
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "42d79c9948c0ec76596bb5dcef31a1e02336bd83",
+  "prompts": {},
+  "sessions": {
+    "s_7f91369258cb80": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0844a-e9d7-76f1-bc7d-8fc86f13209c",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": null
+    }
+  }
+}
