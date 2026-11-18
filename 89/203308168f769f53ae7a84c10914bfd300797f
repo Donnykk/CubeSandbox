@@ -1,0 +1,71 @@
+CubeMaster/pkg/cubelet/actions.go
+  s_7fbda0bc2f8a83::t_84d5c48ebb7682 10-11,19,21,45,47-68,238
+CubeMaster/pkg/cubelet/grpcconn/address.go
+  s_7fbda0bc2f8a83::t_84d5c48ebb7682 1-15
+CubeMaster/pkg/scheduler/capacity_retry_test.go
+  s_7fbda0bc2f8a83::t_af493ef96b7d91 1-131
+CubeOps/internal/nodemanagement/nodemetric/resource_release_test.go
+  s_7fbda0bc2f8a83::t_012a98ea7ac6fd 1-35
+  s_7fbda0bc2f8a83::t_2f96b8a2a361ad 36-38
+  s_7fbda0bc2f8a83::t_721ba1a137b690 39-47
+CubeMaster/pkg/localcache/resource_release.go
+  s_7fbda0bc2f8a83::t_abef209e20a709 1-71
+CubeMaster/pkg/scheduler/schedule.go
+  s_7fbda0bc2f8a83::t_abef209e20a709 8,11,34-71
+CubeMaster/pkg/localcache/node_cache.go
+  s_7fbda0bc2f8a83::t_84d5c48ebb7682 247,267,408-414
+CubeMaster/pkg/cubelet/destroy_release_test.go
+  s_7fbda0bc2f8a83::t_6328cbf7b631a2 1-70
+  s_7fbda0bc2f8a83::t_bd302b30476d36 71-73
+  s_7fbda0bc2f8a83::t_9480a46ebf5d2e 74-96
+CubeOps/go.mod
+  s_7fbda0bc2f8a83::t_aa0b5c848e90a4 6,104
+CubeMaster/pkg/localcache/resource_release_test.go
+  s_7fbda0bc2f8a83::t_1e61f7c06b8ee1 1-91
+  s_7fbda0bc2f8a83::t_d013178f8ddd47 92-94
+  s_7fbda0bc2f8a83::t_6cf1f01b09902c 95-101
+CubeMaster/pkg/service/sandbox/destroy_recovery_test.go
+  s_74fb342aa2fc18::t_5b7bcccb2797d2 20,55-59,71-72,75-77,94-97,104
+docs/zh/guide/cubemaster-scheduler-config.md
+  s_7fbda0bc2f8a83::t_a65b285d734624 50-61
+CubeMaster/pkg/base/node/node.go
+  s_7fbda0bc2f8a83::t_2783692d8233ed 106-107
+CubeMaster/pkg/localcache/redis_cache.go
+  s_7fbda0bc2f8a83::t_2e856b33c1d588 48-49,88-95,119-120,143,145,147,164-165,239-240,336
+CubeMaster/pkg/service/sandbox/sandbox_migrate.go
+  s_7fbda0bc2f8a83::t_ae94aad409fd97 21
+CubeOps/go.sum
+  s_7fbda0bc2f8a83::t_c7373afb5e88ff 12-13,211-212
+CubeOps/internal/nodemanagement/nodemetric/redis_metric.go
+  s_7fbda0bc2f8a83::t_4ad9cdf7213e24 26-35,242,244,246,264-265
+Cubelet/services/cubebox/destroy_lifecycle_test.go
+  s_7fbda0bc2f8a83::t_919a809cddec8d 114-120
+Cubelet/services/cubebox/service.go
+  s_7fbda0bc2f8a83::t_72d3142857b65f 620
+pkgs/proto/services/cubebox/v1/utils.go
+  s_7fbda0bc2f8a83::t_900dabd658fcbe 11-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "89203308168f769f53ae7a84c10914bfd300797f",
+  "prompts": {},
+  "sessions": {
+    "s_74fb342aa2fc18": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08fb5-7ed8-7fa1-9322-6d2b4b11b9a8",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_7fbda0bc2f8a83": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1d453-c16c-7dc1-a7df-559db453643d",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+CubeOps/go.mod
+  s_df852a23dacd90::t_87e557edb57e2a 6,104
+CubeOps/go.sum
+  s_df852a23dacd90::t_725792e0f257e6 12-13,211-212
+CubeOps/internal/nodemanagement/nodemetric/redis_metric.go
+  s_df852a23dacd90::t_7c4e2d03dbe07d 26-35,242,244,246,264-265
+CubeOps/internal/nodemanagement/nodemetric/resource_release_test.go
+  s_df852a23dacd90::t_a0404750466fd3 1-47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "2d3ef563c81aab53b071638d02afceb0cdbe8b3e",
+  "prompts": {},
+  "sessions": {
+    "s_df852a23dacd90": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1e262-184a-7e43-bc3d-3984243853ea",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
