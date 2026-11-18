@@ -1,0 +1,21 @@
+docs/guide/cross-node-snapshot.md
+  s_909c65de65db59::t_9490aadf18a260 22-29,34,44
+docs/zh/guide/cross-node-snapshot.md
+  s_909c65de65db59::t_d7a1ed45a6a0dd 31-37,39,53
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "d950dc29e63c6b84c1fe64d8d8916b856a615497",
+  "prompts": {},
+  "sessions": {
+    "s_909c65de65db59": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1763f-0c89-7dd2-ae0c-e4a6b4b36f82",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
