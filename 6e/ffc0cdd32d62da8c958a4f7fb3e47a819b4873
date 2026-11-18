@@ -1,0 +1,25 @@
+examples/volume/nfs/cmd/cube-volume-nfs/main.go
+  s_b66137482d1d21::t_d5e349cc798c98 1-213
+examples/volume/nfs/cmd/cube-volume-nfs/main_test.go
+  s_b66137482d1d21::t_d5e349cc798c98 1-42
+examples/volume/nfs/README.zh.md
+  s_b66137482d1d21::t_fde13ac976d5ae 1-48
+examples/volume/nfs/go.mod
+  s_b66137482d1d21::t_7a66c122ccfa51 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "6effc0cdd32d62da8c958a4f7fb3e47a819b4873",
+  "prompts": {},
+  "sessions": {
+    "s_b66137482d1d21": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08431-e2bc-7a20-a3dc-30312d47957b",
+        "model": "gpt-6.2-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+Cubelet/services/cubebox/destroy_lifecycle_test.go
+  s_df852a23dacd90::t_72a4df3277d22c 114-120
+Cubelet/services/cubebox/service.go
+  s_df852a23dacd90::t_6e9cc6d04a27d3 620
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "2224d5effb0b025abf7b2b3717cf2cae9992c4b0",
+  "prompts": {},
+  "sessions": {
+    "s_df852a23dacd90": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1e262-184a-7e43-bc3d-3984243853ea",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}

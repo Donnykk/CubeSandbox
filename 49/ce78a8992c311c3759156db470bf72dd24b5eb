@@ -1,0 +1,42 @@
+deploy/kubernetes/chart/values.yaml
+  s_74fb342aa2fc18::t_87dc6c7fec9f0e 232-237
+CubeMaster/pkg/templatecenter/template_backend_default_test.go
+  s_74fb342aa2fc18::t_3404bf3fbf48a7 1-61
+CubeMaster/pkg/templatecenter/template_backend_default.go
+  s_74fb342aa2fc18::t_3404bf3fbf48a7 1-23,25-38
+  s_74fb342aa2fc18::t_87dc6c7fec9f0e 24
+CubeMaster/cmd/cubemastercli/commands/cubebox/template.go
+  s_909c65de65db59::t_e5e965e00be114 882
+CubeMaster/pkg/service/sandbox/types/types.go
+  s_74fb342aa2fc18::t_755068e9235e4f 716-718
+CubeMaster/pkg/templatecenter/template_image.go
+  s_909c65de65db59::t_0ddcac0c3cd9a7 122
+docs/guide/cross-node-snapshot.md
+  s_909c65de65db59::t_a4bd9cc71d1398 22-29,34,44
+docs/zh/guide/cross-node-snapshot.md
+  s_74fb342aa2fc18::t_10f52854867b04 31-37,39,53
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "49ce78a8992c311c3759156db470bf72dd24b5eb",
+  "prompts": {},
+  "sessions": {
+    "s_74fb342aa2fc18": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08fb5-7ed8-7fa1-9322-6d2b4b11b9a8",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_909c65de65db59": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1763f-0c89-7dd2-ae0c-e4a6b4b36f82",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
