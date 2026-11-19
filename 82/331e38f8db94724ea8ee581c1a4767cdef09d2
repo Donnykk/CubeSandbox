@@ -1,0 +1,84 @@
+CubeMaster/pkg/templatecenter/job_repo.go
+  s_74fb342aa2fc18::t_10aa1b333d0031 250,261-271,289,312,339
+CubeMaster/pkg/templatecenter/snapshot_inventory_error_test.go
+  s_8a65e12e489491::t_20cd671ef0d2c6 1-39
+CubeMaster/pkg/task/destroy_retry_test.go
+  s_8a65e12e489491::t_7b6b9bb6ee0c05 1-59
+  s_8a65e12e489491::t_3b55dc547f05b0 60-63
+CubeMaster/pkg/service/sandbox/sandbox_info.go
+  s_74fb342aa2fc18::t_806ba070f11639 180
+CubeMaster/pkg/sandboxspec/store.go
+  s_74fb342aa2fc18::t_2a941ea943499f 39-40
+  s_74fb342aa2fc18::t_9d573854c2fdf6 70-82,406-427,438-444
+CubeMaster/pkg/service/sandbox/destroy_recovery_test.go
+  s_8a65e12e489491::t_ba61cd76e63a45 1-106
+CubeMaster/pkg/templatecenter/sandbox_spec_delete_mysql_test.go
+  s_8a65e12e489491::t_6b18d5cc9ea844 1-62
+CubeMaster/pkg/service/sandbox/sandbox_remove.go
+  s_74fb342aa2fc18::t_a2e6b4170a17a0 9,23
+  s_74fb342aa2fc18::t_43beae89851057 50-54,122-132,181,191-198,200-202,221,237-239,262-266
+CubeMaster/pkg/templatecenter/snapshot_unclaimed_test.go
+  s_8a65e12e489491::t_0d50ccf13a8221 1-61
+CubeMaster/pkg/service/httpservice/cube/snapshot_worker_error_test.go
+  s_8a65e12e489491::t_d34568e094116c 1-44
+docs/master-lifecycle-recovery.md
+  s_8a65e12e489491::t_aacccfd0741e12 1-36
+CubeMaster/Makefile
+  s_8a65e12e489491::t_1956565939a791 136
+CubeMaster/pkg/service/sandbox/sandbox_remove_test.go
+  s_74fb342aa2fc18::t_31bd7d62876c7e 18,47-49,65-99
+CubeMaster/pkg/templatecenter/store.go
+  s_74fb342aa2fc18::t_2502a0fa3a9253 498-502
+CubeMaster/pkg/sandboxspec/host_test.go
+  s_8a65e12e489491::t_ba61cd76e63a45 1-34
+CubeMaster/pkg/templatecenter/snapshot_release_mysql_test.go
+  s_8a65e12e489491::t_dbc29bd97839e4 1-77
+CubeMaster/pkg/service/sandbox/id_resolve_unavailable_test.go
+  s_8a65e12e489491::t_64f91b76579a17 1-72
+CubeMaster/pkg/errorcode/error.go
+  s_74fb342aa2fc18::t_9ad524aa77b731 54,75
+CubeMaster/pkg/service/sandbox/webhook_updates_destruction_test.go
+  s_8a65e12e489491::t_3e2c2a809f813b 20,270,285-290,318-329,457,485-486,501-505
+CubeMaster/pkg/service/sandbox/id_resolve.go
+  s_74fb342aa2fc18::t_708d34b5211a0b 10,49-58
+CubeMaster/pkg/templatecenter/snapshot_ops.go
+  s_74fb342aa2fc18::t_646017ace2e3a3 1830
+CubeMaster/pkg/templatecenter/artifact_lifecycle.go
+  s_74fb342aa2fc18::t_15189ce500323a 9,96-102,104-105,108,189,293
+CubeMaster/pkg/service/httpservice/cube/snapshot.go
+  s_74fb342aa2fc18::t_4cfbab288e3efc 785-786,806-811,842-843
+CubeMaster/pkg/templatecenter/job_claim_mysql_test.go
+  s_8a65e12e489491::t_7741ed1cb24e74 1-126
+CubeMaster/pkg/service/httpservice/cube/template_commit.go
+  s_8a65e12e489491::t_06b36fdbe1fb9d 130-136,140,157
+CubeMaster/pkg/service/httpservice/cube/template_commit_test.go
+  s_8a65e12e489491::t_959cc63e889c71 94-110
+CubeMaster/pkg/task/handlers.go
+  s_8a65e12e489491::t_ad5ad98ad9eed2 276-278,281-283
+CubeMaster/pkg/templatecenter/snapshot_reconciler.go
+  s_8a65e12e489491::t_494bdf2bf64e15 131-133,204-231
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "82331e38f8db94724ea8ee581c1a4767cdef09d2",
+  "prompts": {},
+  "sessions": {
+    "s_74fb342aa2fc18": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08fb5-7ed8-7fa1-9322-6d2b4b11b9a8",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    },
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": null
+    }
+  }
+}
