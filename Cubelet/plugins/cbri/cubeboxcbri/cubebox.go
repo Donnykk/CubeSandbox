@@ -789,7 +789,7 @@ func (e *cubeboxInstancePlugin) resolveSnapshotPaths(templateID, rawPath string,
 		}, nil
 	}
 
-	if looksLikeSnapshotSpecPath(path) || looksLikeSnapshotSpecDir(path) {
+	if filepath.Base(path) == storage.SnapshotMetadataDir || looksLikeSnapshotSpecPath(path) || looksLikeSnapshotSpecDir(path) {
 		return &snapshotPaths{
 			Base:   filepath.Dir(path),
 			Spec:   path,

@@ -229,14 +229,9 @@ func TestResolveSnapshotPathsAcceptsMetadataHome(t *testing.T) {
 	t.Parallel()
 	home := t.TempDir()
 	meta := filepath.Join(home, "metadata")
-	if err := os.MkdirAll(filepath.Join(meta, "snapshot"), 0o755); err != nil {
+	// Package metadata may be detached until restore mounts a private copy.
+	if err := os.Mkdir(meta, 0o755); err != nil {
 		t.Fatalf("mkdir: %v", err)
-	}
-	if err := os.WriteFile(filepath.Join(meta, "snapshot", "config.json"), []byte(`{}`), 0o644); err != nil {
-		t.Fatalf("write config: %v", err)
-	}
-	if err := os.WriteFile(filepath.Join(meta, "metadata.json"), []byte(`{}`), 0o644); err != nil {
-		t.Fatalf("write metadata: %v", err)
 	}
 	p := &cubeboxInstancePlugin{}
 	req := &cubebox.RunCubeSandboxRequest{

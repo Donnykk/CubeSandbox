@@ -15,6 +15,19 @@ import (
 	"github.com/tencentcloud/CubeSandbox/Cubelet/storage/cow"
 )
 
+// ReleaseS3TemplateBuildRootfs detaches the temporary build VM's disk after
+// the VM has been destroyed. The lvol remains managed by template cleanup.
+func ReleaseS3TemplateBuildRootfs(ctx context.Context, backend, templateID string) error {
+	if !isS3CatalogBackend(backend) {
+		return nil
+	}
+	store, err := requireS3Cow()
+	if err != nil {
+		return err
+	}
+	return deactivateS3Object(ctx, store, cowTemplateBuildRootfsName(templateID), cowKindVolume)
+}
+
 // FinalizeS3PackageSnapshots is a Pause／Commit／AppSnapshot packaging step:
 // flush＋umount the package metadata mount, seal RW memory／metadata work
 // volumes into RO snapshots, deactivate the sealed snaps (no host IO until a

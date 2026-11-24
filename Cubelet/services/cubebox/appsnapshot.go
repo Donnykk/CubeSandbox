@@ -522,6 +522,9 @@ func (s *service) AppSnapshot(ctx context.Context, req *cubebox.AppSnapshotReque
 	}
 	temporaryCubeboxDestroyed = true
 
+	if err := storage.ReleaseS3TemplateBuildRootfs(destroyCtx, backend, templateID); err != nil {
+		stepLog.Warnf("release s3 template build rootfs %s: %v", templateID, err)
+	}
 	if err := deactivateCowSnapshotObjectsOn(ctx, stepLog, backend, memoryObject, rootfsObject); err != nil {
 		cleanupSnapshotObjects()
 		layout.discardTmpDir()

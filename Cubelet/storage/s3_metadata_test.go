@@ -44,9 +44,11 @@ func (m *memS3MetadataKV) Set(body []byte) error {
 func stubS3MetadataMounts(t *testing.T) {
 	t.Helper()
 	mounted := map[string]string{}
+	var mountedMu sync.RWMutex
 	origFormat := formatS3MetadataBaseDevice
 	origMount := mountS3MetadataDevice
 	origUmount := unmountS3MetadataPath
+	origReadUmount := unmountS3PackageRead
 	origIsMounted := s3MetadataIsMounted
 	origMountSource := s3MetadataMountSource
 	origKV := testS3MetadataKV
@@ -56,22 +58,32 @@ func stubS3MetadataMounts(t *testing.T) {
 		return nil
 	}
 	mountS3MetadataDevice = func(devicePath, mountPath string) error {
+		mountedMu.Lock()
+		defer mountedMu.Unlock()
 		mounted[mountPath] = devicePath
 		return nil
 	}
 	unmountS3MetadataPath = func(mountPath string) error {
+		mountedMu.Lock()
+		defer mountedMu.Unlock()
 		delete(mounted, mountPath)
 		return nil
 	}
+	unmountS3PackageRead = unmountS3MetadataPath
 	s3MetadataIsMounted = func(mountPath string) bool {
+		mountedMu.RLock()
+		defer mountedMu.RUnlock()
 		_, ok := mounted[mountPath]
 		return ok
 	}
 	s3MetadataMountSource = func(mountPath string) string { return mounted[mountPath] }
+	mountedMu.RLock()
+	defer mountedMu.RUnlock()
 	t.Cleanup(func() {
 		formatS3MetadataBaseDevice = origFormat
 		mountS3MetadataDevice = origMount
 		unmountS3MetadataPath = origUmount
+		unmountS3PackageRead = origReadUmount
 		s3MetadataIsMounted = origIsMounted
 		s3MetadataMountSource = origMountSource
 		testS3MetadataKV = origKV

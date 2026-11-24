@@ -258,14 +258,37 @@ func (h *localCubeRunTemplateManager) SetInstanceType(instanceType string) {
 }
 
 func (h *localCubeRunTemplateManager) recoverS3LocalTemplates(ctx context.Context, templateID string) error {
-	// Heartbeat recovery has no template id. S3 config.json lives on a metadata
-	// disk that Finalize unmounts, so a directory scan alone sees empty homes
-	// and drops every local S3 template after Cubelet restarts. Mount each
-	// package home first; a known id still mounts only that package.
-	for _, id := range s3RecoveryIDs(ctx, templateID, s3SnapshotKindRoots()) {
-		mountS3PackageMetadataForRecovery(ctx, id)
+	if err := h.recoverBackendMetadataHomes(ctx, cow.BackendS3, "s3", templateID); err != nil {
+		return err
 	}
-	return h.recoverBackendMetadataHomes(ctx, cow.BackendS3, "s3", templateID)
+	templates, err := h.store.ListGeneric()
+	if err != nil {
+		return err
+	}
+	known := make(map[string]struct{}, len(templates))
+	for _, template := range templates {
+		if template == nil || template.Snapshot.Snapshot.Media != "s3" {
+			continue
+		}
+		home := template.Snapshot.Snapshot.Path
+		if filepath.Base(home) == storage.SnapshotMetadataDir {
+			home = filepath.Dir(home)
+		}
+		if entry, err := storage.ReadSnapshotCatalogAt(home); err == nil && entry.SnapshotID == template.TemplateID {
+			known[template.TemplateID] = struct{}{}
+		}
+	}
+	// Recover missing entries one package at a time. Persisted inventory can
+	// be served without mounting its metadata again on the next heartbeat.
+	for _, id := range s3RecoveryIDs(ctx, templateID, s3SnapshotKindRoots()) {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
+		if _, ok := known[id]; !ok {
+			h.recoverS3PackageMetadata(ctx, id)
+		}
+	}
+	return nil
 }
 
 func s3SnapshotKindRoots() []string {
@@ -330,16 +353,11 @@ func s3PackageIDsUnder(ctx context.Context, roots ...string) []string {
 	return ids
 }
 
-// mountS3PackageMetadataForRecovery makes an S3 package's run-template
-// metadata readable before the recovery scan looks for it.
-//
-// config.json lives on the package metadata disk, which Finalize seals and
-// unmounts, so a package that is on this node still shows an empty metadata
-// dir on the host. Mounting it here is what lets a package imported from
-// another node stand in for a template that was never built locally.
-func mountS3PackageMetadataForRecovery(ctx context.Context, templateID string) {
+// recoverS3PackageMetadata publishes inventory while the package's config is
+// readable, then releases the temporary mount and its NVMe namespace.
+func (h *localCubeRunTemplateManager) recoverS3PackageMetadata(ctx context.Context, templateID string) {
 	id := strings.TrimSpace(templateID)
-	if id == "" {
+	if id == "" || storage.S3PackageOperationInProgress(id) {
 		return
 	}
 	for _, kind := range []string{storage.SnapshotKindNormal, storage.SnapshotKindPause} {
@@ -350,16 +368,15 @@ func mountS3PackageMetadataForRecovery(ctx context.Context, templateID string) {
 		if st, err := os.Stat(home); err != nil || !st.IsDir() {
 			continue
 		}
-		if _, err := os.Stat(metadataHomeConfigPath(home)); err == nil {
-			return
-		}
 		metaDir := filepath.Join(home, storage.SnapshotMetadataDir)
-		if err := storage.MountS3MetadataForRecovery(ctx, cow.BackendS3, id, metaDir); err != nil {
+		if err := storage.ReadS3PackageMetadata(ctx, cow.BackendS3, id, metaDir, func() error {
+			return h.recoverMetadataHomes(ctx, filepath.Dir(home), "s3", id)
+		}); err != nil {
 			log.G(ctx).WithFields(CubeLog.Fields{
 				"template_id": id,
 				"meta_dir":    metaDir,
 				"err":         err.Error(),
-			}).Warn("failed to mount s3 package metadata for template recovery")
+			}).Warn("failed to recover s3 package metadata")
 		}
 		return
 	}

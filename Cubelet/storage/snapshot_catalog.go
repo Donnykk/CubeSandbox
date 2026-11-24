@@ -251,11 +251,31 @@ func WriteSnapshotCatalogFor(backend string, entry *SnapshotCatalogEntry) error 
 		return fmt.Errorf("ensure snapshot dir: %w", err)
 	}
 	path := filepath.Join(catalogDir, snapshotCatalogFileName)
-	tmp := path + ".tmp"
+	if isS3CatalogBackend(backend) {
+		home := filepath.Dir(catalogDir)
+		if filepath.Base(catalogDir) == SnapshotMetadataDir && filepath.Base(home) == entry.SnapshotID {
+			// A rewrite invalidates the detached copy before changing the
+			// authoritative catalog. The next scoped read recreates it.
+			if err := os.Remove(filepath.Join(home, snapshotCatalogFileName)); err != nil && !os.IsNotExist(err) {
+				return err
+			}
+		}
+	}
+	if err := writeSnapshotCatalogFile(path, entry); err != nil {
+		return err
+	}
+	snapshotCatalogMu.Lock()
+	catalogNSLocked(backend).index[entry.SnapshotID] = cloneCatalogEntry(entry)
+	snapshotCatalogMu.Unlock()
+	return nil
+}
+
+func writeSnapshotCatalogFile(path string, entry *SnapshotCatalogEntry) error {
 	body, err := json.MarshalIndent(entry, "", "  ")
 	if err != nil {
 		return err
 	}
+	tmp := path + ".tmp"
 	if err := os.WriteFile(tmp, body, 0o644); err != nil {
 		return err
 	}
@@ -263,10 +283,27 @@ func WriteSnapshotCatalogFor(backend string, entry *SnapshotCatalogEntry) error 
 		_ = os.Remove(tmp)
 		return err
 	}
-	snapshotCatalogMu.Lock()
-	catalogNSLocked(backend).index[entry.SnapshotID] = cloneCatalogEntry(entry)
-	snapshotCatalogMu.Unlock()
 	return nil
+}
+
+// Keep the catalog accessible after the package metadata disk is detached.
+// The copy is in the existing package home and follows its cleanup lifecycle.
+func cacheS3PackageCatalog(snapshotID, metadataDir string) error {
+	home := filepath.Dir(metadataDir)
+	if filepath.Base(metadataDir) != SnapshotMetadataDir || filepath.Base(home) != snapshotID {
+		return nil
+	}
+	entry, err := readSnapshotCatalogFile(filepath.Join(metadataDir, snapshotCatalogFileName))
+	if errors.Is(err, ErrSnapshotCatalogNotFound) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	if entry.SnapshotID != snapshotID {
+		return fmt.Errorf("s3 package %s contains catalog for %s", snapshotID, entry.SnapshotID)
+	}
+	return writeSnapshotCatalogFile(filepath.Join(home, snapshotCatalogFileName), entry)
 }
 
 // DeleteSnapshotCatalog removes the in-memory cache entry for snapshotID from
@@ -406,7 +443,9 @@ func catalogFilePatterns(backend, root, snapshotID string) []string {
 		id = snapshotID
 	}
 	patterns := []string{filepath.Join(root, id, SnapshotMetadataDir, snapshotCatalogFileName)}
-	if !isS3CatalogBackend(backend) {
+	if isS3CatalogBackend(backend) {
+		patterns = append(patterns, filepath.Join(root, id, snapshotCatalogFileName))
+	} else {
 		// Legacy XFS: <root>/cubebox/<id>/<specDir>/catalog.json
 		if snapshotID != "" {
 			patterns = append(patterns, filepath.Join(root, "*", snapshotID, "*", snapshotCatalogFileName))
@@ -503,6 +542,12 @@ func ReadSnapshotCatalogAt(snapshotPath string) (*SnapshotCatalogEntry, error) {
 	entry, err := readSnapshotCatalogFile(filepath.Join(clean, snapshotCatalogFileName))
 	if err == nil {
 		return entry, nil
+	}
+	if errors.Is(err, ErrSnapshotCatalogNotFound) && filepath.Base(clean) == S3SnapshotMetadataDir {
+		home := filepath.Dir(clean)
+		if cached, err := readSnapshotCatalogFile(filepath.Join(home, snapshotCatalogFileName)); err == nil && cached.SnapshotID == filepath.Base(home) {
+			return cached, nil
+		}
 	}
 	return readSnapshotCatalogFile(filepath.Join(clean, S3SnapshotMetadataDir, snapshotCatalogFileName))
 }

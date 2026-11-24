@@ -438,9 +438,10 @@ func TestS3RecoveryIDsListsPackageHomesWhenIDUnknown(t *testing.T) {
 
 // An unmounted or absent package must not blow up the recovery attempt; the
 // caller treats it as a plain miss.
-func TestMountS3PackageMetadataForRecoveryTolerAtesMissingPackage(t *testing.T) {
-	mountS3PackageMetadataForRecovery(context.Background(), "")
-	mountS3PackageMetadataForRecovery(context.Background(), "snap-does-not-exist")
+func TestRecoverS3PackageMetadataToleratesMissingPackage(t *testing.T) {
+	manager := newReadyTemplateManager(t)
+	manager.recoverS3PackageMetadata(context.Background(), "")
+	manager.recoverS3PackageMetadata(context.Background(), "snap-does-not-exist")
 }
 
 // A backend lookup must stay inside that backend's registered package root.
