@@ -44,6 +44,7 @@ func (m *memS3MetadataKV) Set(body []byte) error {
 func stubS3MetadataMounts(t *testing.T) {
 	t.Helper()
 	mounted := map[string]string{}
+	var mountsMu sync.Mutex
 	origFormat := formatS3MetadataBaseDevice
 	origMount := mountS3MetadataDevice
 	origUmount := unmountS3MetadataPath
@@ -56,18 +57,28 @@ func stubS3MetadataMounts(t *testing.T) {
 		return nil
 	}
 	mountS3MetadataDevice = func(devicePath, mountPath string) error {
+		mountsMu.Lock()
+		defer mountsMu.Unlock()
 		mounted[mountPath] = devicePath
 		return nil
 	}
 	unmountS3MetadataPath = func(mountPath string) error {
+		mountsMu.Lock()
+		defer mountsMu.Unlock()
 		delete(mounted, mountPath)
 		return nil
 	}
 	s3MetadataIsMounted = func(mountPath string) bool {
+		mountsMu.Lock()
+		defer mountsMu.Unlock()
 		_, ok := mounted[mountPath]
 		return ok
 	}
-	s3MetadataMountSource = func(mountPath string) string { return mounted[mountPath] }
+	s3MetadataMountSource = func(mountPath string) string {
+		mountsMu.Lock()
+		defer mountsMu.Unlock()
+		return mounted[mountPath]
+	}
 	t.Cleanup(func() {
 		formatS3MetadataBaseDevice = origFormat
 		mountS3MetadataDevice = origMount

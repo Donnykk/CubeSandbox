@@ -12,6 +12,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -77,9 +78,14 @@ var (
 	s3MetadataMountSource      = s3MetadataMountSourceImpl
 
 	s3MetadataMu         sync.Mutex
-	s3MetadataMounts     = map[string]string{} // snapshotID → current mount path
+	s3MetadataMounts     = map[string]string{} // snapshotID to current mount path
 	s3MetadataOperations = map[string]*s3PackageOperation{}
-	testS3MetadataKV     s3MetadataKV
+	// Independent clones hold the lifecycle read lock while storage I/O runs.
+	// Package mutations take its write lock before the state lock.
+	s3MetadataLifecycle    sync.RWMutex
+	s3MetadataPackageLocks = utils.NewResourceLocks()
+	s3MetadataMountPaths   = utils.NewResourceLocks()
+	testS3MetadataKV       s3MetadataKV
 )
 
 type s3PackageOperation struct {
@@ -117,6 +123,8 @@ func beginS3PackageOperation(ctx context.Context, backend, snapshotID, kind stri
 	if id == "" {
 		return nil, nil, fmt.Errorf("s3 metadata snapshot_id is required")
 	}
+	s3MetadataLifecycle.Lock()
+	defer s3MetadataLifecycle.Unlock()
 	s3MetadataMu.Lock()
 	defer s3MetadataMu.Unlock()
 	if active, busy := s3MetadataOperations[id]; busy {
@@ -152,6 +160,8 @@ func ValidateS3PackageMetadata(backend, mountPath string) error {
 	if !isS3CatalogBackend(backend) {
 		return nil
 	}
+	s3MetadataLifecycle.Lock()
+	defer s3MetadataLifecycle.Unlock()
 	s3MetadataMu.Lock()
 	defer s3MetadataMu.Unlock()
 	if s3MetadataMountSource(mountPath) == "" {
@@ -397,6 +407,8 @@ func PrepareS3MetadataMount(ctx context.Context, backend, snapshotID, mountPath 
 		return fmt.Errorf("s3 cow store is not initialized")
 	}
 
+	s3MetadataLifecycle.Lock()
+	defer s3MetadataLifecycle.Unlock()
 	s3MetadataMu.Lock()
 	defer s3MetadataMu.Unlock()
 
@@ -425,9 +437,11 @@ func CloneS3MetadataFromParent(ctx context.Context, backend, parentID, childID, 
 	if childID == "" || mountPath == "" {
 		return fmt.Errorf("s3 metadata child id and mount path are required")
 	}
-	if err := EnsureS3MetadataBase(ctx); err != nil {
+	unlock, err := s3MetadataPackageLocks.LockContext(ctx, childID)
+	if err != nil {
 		return err
 	}
+	defer unlock()
 	store, err := requireS3Cow()
 	if err != nil {
 		return err
@@ -436,8 +450,11 @@ func CloneS3MetadataFromParent(ctx context.Context, backend, parentID, childID, 
 		return fmt.Errorf("s3 cow store is not initialized")
 	}
 
-	s3MetadataMu.Lock()
-	defer s3MetadataMu.Unlock()
+	s3MetadataLifecycle.RLock()
+	defer s3MetadataLifecycle.RUnlock()
+	if err := ctx.Err(); err != nil {
+		return err
+	}
 
 	source := ""
 	if parentID != "" && parentID != childID {
@@ -456,14 +473,92 @@ func CloneS3MetadataFromParent(ctx context.Context, backend, parentID, childID, 
 			}
 		}
 	}
+	if source == "" {
+		// Restoring a sealed parent does not use the node-local base. Only
+		// reconcile it for fallback: repeated lookup/deactivation/state writes
+		// otherwise serialize every restore behind the global metadata lock.
+		if err := EnsureS3MetadataBase(ctx); err != nil {
+			return err
+		}
+		// Resolve the immutable node-local base under the state lock, then
+		// derive outside it just as for an explicitly named parent snapshot.
+		s3MetadataMu.Lock()
+		state, stateErr := loadS3MetadataState()
+		s3MetadataMu.Unlock()
+		if stateErr != nil {
+			return stateErr
+		}
+		source = strings.TrimSpace(state.Base.SnapshotName)
+		if source == "" {
+			source = S3MetadataBaseSnapshotName
+		}
+	}
+	if err := ctx.Err(); err != nil {
+		return err
+	}
 	vol, err := store.deriveMetadataSnapshotLocked(ctx, childID, source)
 	if err != nil {
 		return err
 	}
-	if err := mountS3MetadataLocked(childID, vol.FilePath, mountPath); err != nil {
+	if err := ctx.Err(); err != nil {
 		return err
 	}
-	return persistDerivedLocked(childID, vol.VolumeName, mountPath)
+	return mountClonedS3Metadata(ctx, childID, vol.VolumeName, vol.FilePath, mountPath)
+}
+
+// The caller holds the child's clone lock and the lifecycle read lock. Package
+// mutations therefore cannot unmount this disk while its mount is in flight.
+// A target lock also serializes different children using aliases of one path.
+func mountClonedS3Metadata(ctx context.Context, id, volume, device, target string) error {
+	path, err := prepareS3MetadataMountPath(target)
+	if err != nil {
+		return err
+	}
+	paths := []string{path}
+	s3MetadataMu.Lock()
+	previous := s3MetadataMounts[id]
+	s3MetadataMu.Unlock()
+	if previous != "" {
+		if canonical, err := coremount.CanonicalizePath(previous); err == nil {
+			previous = canonical
+		}
+		if previous != path {
+			paths = append(paths, previous)
+		}
+	}
+	sort.Strings(paths)
+	var unlocks []func()
+	defer func() {
+		for i := len(unlocks) - 1; i >= 0; i-- {
+			unlocks[i]()
+		}
+	}()
+	for _, path := range paths {
+		unlock, err := s3MetadataMountPaths.LockContext(ctx, path)
+		if err != nil {
+			return err
+		}
+		unlocks = append(unlocks, unlock)
+	}
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+
+	// The child and path locks also protect reconciliation of an existing
+	// mount. Neither a fresh mount nor a replacement needs the global state
+	// lock while it waits for NVMe I/O.
+	s3MetadataMu.Lock()
+	previous = s3MetadataMounts[id]
+	s3MetadataMu.Unlock()
+	unmounted, mountErr := replaceS3MetadataMount(device, path, previous)
+	s3MetadataMu.Lock()
+	defer s3MetadataMu.Unlock()
+	forgetS3MetadataMountPathsLocked(unmounted)
+	if mountErr != nil {
+		return mountErr
+	}
+	s3MetadataMounts[id] = path
+	return persistDerivedLocked(id, volume, path)
 }
 
 // MountS3MetadataAt mounts the package metadata disk at mountPath.
@@ -499,6 +594,8 @@ func mountS3MetadataAt(ctx context.Context, backend, snapshotID, mountPath strin
 		return nil
 	}
 
+	s3MetadataLifecycle.Lock()
+	defer s3MetadataLifecycle.Unlock()
 	s3MetadataMu.Lock()
 	defer s3MetadataMu.Unlock()
 	if operation, busy := s3MetadataOperations[id]; recovery && busy {
@@ -601,6 +698,8 @@ func UnmountS3Metadata(mountPath string) error {
 	if mountPath == "" {
 		return nil
 	}
+	s3MetadataLifecycle.Lock()
+	defer s3MetadataLifecycle.Unlock()
 	s3MetadataMu.Lock()
 	defer s3MetadataMu.Unlock()
 	return unmountS3MetadataPathIfMounted(mountPath)
@@ -634,6 +733,8 @@ func releaseS3MetadataVolume(ctx context.Context, backend, snapshotID string, dr
 		return nil
 	}
 
+	s3MetadataLifecycle.Lock()
+	defer s3MetadataLifecycle.Unlock()
 	s3MetadataMu.Lock()
 	defer s3MetadataMu.Unlock()
 
@@ -751,33 +852,56 @@ func (m *S3Cow) ensureS3MetadataRWVolumeLocked(ctx context.Context, packageID st
 	return volName, nil
 }
 
-func mountS3MetadataLocked(snapshotID, devicePath, mountPath string) error {
+func prepareS3MetadataMountPath(mountPath string) (string, error) {
 	if err := pathutil.ValidateNoTraversal(mountPath); err != nil {
-		return fmt.Errorf("invalid s3 metadata mount path: %w", err)
+		return "", fmt.Errorf("invalid s3 metadata mount path: %w", err)
 	}
 	if err := os.MkdirAll(mountPath, 0o755); err != nil {
-		return fmt.Errorf("mkdir s3 metadata mount %s: %w", mountPath, err)
+		return "", fmt.Errorf("mkdir s3 metadata mount %s: %w", mountPath, err)
 	}
 	canonical, err := coremount.CanonicalizePath(mountPath)
 	if err != nil {
-		return fmt.Errorf("resolve s3 metadata mount %s: %w", mountPath, err)
+		return "", fmt.Errorf("resolve s3 metadata mount %s: %w", mountPath, err)
+	}
+	return canonical, nil
+}
+
+func mountS3MetadataLocked(snapshotID, devicePath, mountPath string) error {
+	canonical, err := prepareS3MetadataMountPath(mountPath)
+	if err != nil {
+		return err
 	}
 	mountPath = canonical
-	prev := s3MetadataMounts[snapshotID]
+	unmounted, err := replaceS3MetadataMount(devicePath, mountPath, s3MetadataMounts[snapshotID])
+	forgetS3MetadataMountPathsLocked(unmounted)
+	if err != nil {
+		return err
+	}
+	s3MetadataMounts[snapshotID] = mountPath
+	return nil
+}
+
+// replaceS3MetadataMount performs only mount I/O. The caller protects the
+// package and both paths, then applies the returned bookkeeping under the
+// state lock, including unmounts completed before a later mount failed.
+func replaceS3MetadataMount(devicePath, mountPath, prev string) (unmounted []string, err error) {
 	if prev != "" {
 		if resolved, err := coremount.CanonicalizePath(prev); err == nil {
 			prev = resolved
 		}
 	}
 	if prev != "" && filepath.Clean(prev) != mountPath {
-		if err := unmountS3MetadataPathIfMounted(prev); err != nil {
-			return err
+		if s3MetadataIsMounted(prev) {
+			if err := unmountS3MetadataPath(prev); err != nil {
+				return unmounted, fmt.Errorf("umount s3 metadata %s: %w", prev, err)
+			}
+			unmounted = append(unmounted, prev)
 		}
 	}
 	if s3MetadataIsMounted(mountPath) {
 		src := s3MetadataMountSource(mountPath)
 		if src == "" {
-			return fmt.Errorf("cannot identify mounted s3 metadata source at %s; refusing to unmount", mountPath)
+			return unmounted, fmt.Errorf("cannot identify mounted s3 metadata source at %s; refusing to unmount", mountPath)
 		}
 		want := filepath.Clean(strings.TrimSpace(devicePath))
 		if resolved, err := filepath.EvalSymlinks(src); err == nil {
@@ -787,19 +911,28 @@ func mountS3MetadataLocked(snapshotID, devicePath, mountPath string) error {
 			want = resolved
 		}
 		if src == want {
-			s3MetadataMounts[snapshotID] = filepath.Clean(mountPath)
-			return nil
+			return unmounted, nil
 		}
 		// Path busy with a different device — never treat as success.
-		if err := unmountS3MetadataPathIfMounted(mountPath); err != nil {
-			return fmt.Errorf("s3 metadata mount %s busy (%s), umount for %s: %w", mountPath, src, want, err)
+		if err := unmountS3MetadataPath(mountPath); err != nil {
+			return unmounted, fmt.Errorf("s3 metadata mount %s busy (%s), umount for %s: %w", mountPath, src, want, err)
 		}
+		unmounted = append(unmounted, mountPath)
 	}
 	if err := mountS3MetadataDevice(devicePath, mountPath); err != nil {
-		return err
+		return unmounted, err
 	}
-	s3MetadataMounts[snapshotID] = filepath.Clean(mountPath)
-	return nil
+	return unmounted, nil
+}
+
+func forgetS3MetadataMountPathsLocked(paths []string) {
+	for _, path := range paths {
+		for id, mounted := range s3MetadataMounts {
+			if filepath.Clean(mounted) == filepath.Clean(path) {
+				delete(s3MetadataMounts, id)
+			}
+		}
+	}
 }
 
 func unmountS3MetadataPathIfMounted(mountPath string) error {
@@ -841,6 +974,8 @@ func persistDerivedLocked(snapshotID, volName, mountPath string) error {
 }
 
 func dropDerived(snapshotID string) error {
+	s3MetadataLifecycle.Lock()
+	defer s3MetadataLifecycle.Unlock()
 	s3MetadataMu.Lock()
 	defer s3MetadataMu.Unlock()
 	return dropDerivedLocked(snapshotID)
