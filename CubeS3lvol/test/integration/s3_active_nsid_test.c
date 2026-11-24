@@ -62,10 +62,16 @@ add_at(const char *name, uint32_t subsys, uint32_t nsid)
 	return s3lvol_active_add(name, uuid_for(nsid), subsys, nsid);
 }
 
+static bool
+subsystem_exists(uint32_t subsys)
+{
+	return subsys == 0 || subsys == 2;
+}
+
 int
 main(void)
 {
-	uint32_t nsid, i;
+	uint32_t nsid, subsys, i;
 	char name[32];
 	int rc;
 
@@ -118,9 +124,15 @@ main(void)
 
 	/* Four is the next never-used candidate. An explicit placement reserves it
 	 * before the registry add, so a concurrent auto-allocation must skip it. */
-	s3lvol_active_note_nsid(0, 4);
+	if (!s3lvol_active_reserve_nsid(0, 4)) {
+		fail("reserve nsid 4");
+	}
+	if (s3lvol_active_reserve_nsid(0, 4)) {
+		fail("reject duplicate in-flight reservation");
+	}
 	nsid = s3lvol_active_alloc_nsid(0);
 	expect_eq("auto-alloc skips an explicit placement in flight", nsid, 5);
+	s3lvol_active_release_nsid(0, 4);
 
 	/* Occupy every remaining never-used slot. In-flight allocs already
 	 * touched 3 and 5; 4 was noted. Leave 1 and 2 as the only holes by
@@ -149,6 +161,38 @@ main(void)
 	}
 	nsid = s3lvol_active_alloc_nsid(0);
 	expect_eq("full subsystem returns 0", nsid, 0);
+
+	subsys = 0;
+	nsid = s3lvol_active_alloc_auto_nsid(&subsys, subsystem_exists);
+	expect_eq("automatic placement falls back to an existing subsystem", subsys, 2);
+	expect_eq("fallback uses a free slot", nsid, 1);
+	if (add_at("fallback", subsys, nsid) != 0) {
+		fail("persist fallback placement");
+	} else {
+		expect_eq("recorded fallback subsystem",
+			  s3lvol_active_find("fallback")->subsys, 2);
+	}
+
+	/* Reservations must stay exclusive even after every LRU candidate has
+	 * been touched. A generation update alone would wrap around here. */
+	for (i = 2; i <= RCOW_NS_PER_SUBSYS; i++) {
+		if (!s3lvol_active_reserve_nsid(2, i)) {
+			fail("reserve all remaining free slots");
+			break;
+		}
+	}
+	expect_eq("in-flight slots cannot be reused after an LRU wrap",
+		  s3lvol_active_alloc_nsid(2), 0);
+	subsys = 0;
+	expect_eq("automatic allocation fails when every existing group is full or reserved",
+		  s3lvol_active_alloc_auto_nsid(&subsys, subsystem_exists), 0);
+	expect_eq("failed fallback keeps the requested subsystem", subsys, 0);
+	s3lvol_active_release_nsid(2, 2);
+	expect_eq("a released reservation becomes available again",
+		  s3lvol_active_alloc_nsid(2), 2);
+	for (i = 3; i <= RCOW_NS_PER_SUBSYS; i++) {
+		s3lvol_active_release_nsid(2, i);
+	}
 
 	nsid = s3lvol_active_alloc_nsid(RCOW_NUM_SUBSYS);
 	expect_eq("out-of-range subsys returns 0", nsid, 0);

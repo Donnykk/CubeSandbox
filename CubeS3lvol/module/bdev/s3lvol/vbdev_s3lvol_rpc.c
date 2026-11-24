@@ -41,6 +41,7 @@
 #include "spdk/log.h"
 #include "spdk/lvol.h"
 #include "spdk/nvmf_spec.h"
+#include "spdk/queue.h"
 #include "spdk/rpc.h"
 #include "spdk/string.h"
 #include "spdk/util.h"
@@ -3434,7 +3435,12 @@ struct active_bdev_ctx {
 	char        uuid[SPDK_UUID_STRING_LEN];
 	char        nqn[SPDK_NVMF_NQN_MAX_LEN + 1];
 	uint32_t    subsys;
+	uint32_t    requested_nsid;
+	TAILQ_ENTRY(active_bdev_ctx) link;
 };
+
+static TAILQ_HEAD(active_bdev_pending, active_bdev_ctx) g_active_bdev_pending =
+	TAILQ_HEAD_INITIALIZER(g_active_bdev_pending);
 
 /* The placement, as the document that goes into string_value. Shared by the two
  * paths that report one -- a fresh attach and a repeat call on something already
@@ -3513,6 +3519,8 @@ active_bdev_attached(void *cb_arg, uint32_t nsid, int status)
 		       ctx->nqn, nsid);
 
 done:
+	TAILQ_REMOVE(&g_active_bdev_pending, ctx, link);
+	s3lvol_active_release_nsid(ctx->subsys, ctx->requested_nsid);
 	ctx->done_fn(ctx->done_arg, &out);
 	free(ctx);
 }
@@ -3633,6 +3641,15 @@ active_bdev_attach(const char *device_name, uint32_t want_subsys,
 		want_nsid   = existing->nsid;
 	}
 
+	TAILQ_FOREACH(ctx, &g_active_bdev_pending, link) {
+		if (strcmp(ctx->name, device_name) == 0) {
+			out.failed = true;
+			snprintf(out.msg, sizeof(out.msg), "attach of '%s' already in progress",
+				 device_name);
+			goto done;
+		}
+	}
+
 	subsys = (want_subsys != RCOW_SUBSYS_UNSET) ? want_subsys
 						    : s3lvol_active_hash_subsys(device_name);
 	if (subsys >= RCOW_NUM_SUBSYS) {
@@ -3677,18 +3694,17 @@ active_bdev_attach(const char *device_name, uint32_t want_subsys,
 			goto done;
 		}
 		nsid = want_nsid;
-		/* Reserve explicit placements in the same in-memory generation table
-		 * used by auto-allocation. The registry entry is written only after
-		 * NVMf attach completes, so without this touch a concurrent automatic
-		 * attach can choose the same still-unrecorded slot. */
-		s3lvol_active_note_nsid(subsys, nsid);
 	} else {
-		nsid = s3lvol_active_alloc_nsid(subsys);
+		nsid = want_subsys == RCOW_SUBSYS_UNSET ?
+		       s3lvol_active_alloc_auto_nsid(&subsys, s3lvol_nvmf_subsys_exists) :
+		       s3lvol_active_alloc_nsid(subsys);
 		if (nsid == 0) {
 			out.failed = true;
 			snprintf(out.msg, sizeof(out.msg),
 				 "subsystem %" PRIu32 " has no free namespace slot "
-				 "(%d in use)", subsys, RCOW_NS_PER_SUBSYS);
+				 "(%d in use or reserved)%s", subsys, RCOW_NS_PER_SUBSYS,
+				 want_subsys == RCOW_SUBSYS_UNSET ?
+				 " and no other subsystem has a free slot" : "");
 			goto done;
 		}
 	}
@@ -3710,12 +3726,26 @@ active_bdev_attach(const char *device_name, uint32_t want_subsys,
 	ctx->done_fn  = done_fn;
 	ctx->done_arg = done_arg;
 	ctx->subsys   = subsys;
+	ctx->requested_nsid = nsid;
 	snprintf(ctx->name, sizeof(ctx->name), "%s", device_name);
 	snprintf(ctx->uuid, sizeof(ctx->uuid), "%s", lvol->uuid_str);
 	s3lvol_nvmf_subsys_nqn(subsys, ctx->nqn, sizeof(ctx->nqn));
 
+	/* Recovery and automatic placement share the reservation until attach
+	 * completes and the final placement is recorded. */
+	if (!s3lvol_active_reserve_nsid(subsys, nsid)) {
+		out.failed = true;
+		snprintf(out.msg, sizeof(out.msg),
+			 "subsystem %" PRIu32 " nsid %" PRIu32 " attach already in progress",
+			 subsys, nsid);
+		free(ctx);
+		goto done;
+	}
+	TAILQ_INSERT_TAIL(&g_active_bdev_pending, ctx, link);
 	rc = s3lvol_nvmf_add_ns(ctx->nqn, bdev_name, nsid, active_bdev_attached, ctx);
 	if (rc != 0) {
+		TAILQ_REMOVE(&g_active_bdev_pending, ctx, link);
+		s3lvol_active_release_nsid(subsys, nsid);
 		out.failed = true;
 		snprintf(out.msg, sizeof(out.msg),
 			 "could not start the attach of '%s': %s",

@@ -579,9 +579,13 @@ uint32_t s3lvol_active_hash_subsys(const char *name);
  * returns the cooled-down nsid rather than failing.
  */
 uint32_t s3lvol_active_alloc_nsid(uint32_t subsys);
+/** Try the preferred subsystem, then other existing subsystems. Updates the
+ * placement only on success. */
+uint32_t s3lvol_active_alloc_auto_nsid(uint32_t *subsys, bool (*exists)(uint32_t));
 
-/** Remember an explicit (recovery) placement so auto-alloc treats it as just used. */
-void s3lvol_active_note_nsid(uint32_t subsys, uint32_t nsid);
+/** Keep a slot out of allocation until its asynchronous attach completes. */
+bool s3lvol_active_reserve_nsid(uint32_t subsys, uint32_t nsid);
+void s3lvol_active_release_nsid(uint32_t subsys, uint32_t nsid);
 
 const struct s3lvol_active_entry *s3lvol_active_find(const char *name);
 const struct s3lvol_active_entry *s3lvol_active_find_by_nsid(uint32_t subsys,

@@ -112,6 +112,7 @@ static bool g_loaded;
  * the registry, and the host's view is rebuilt with it. */
 static uint64_t g_nsid_clock;
 static uint64_t g_nsid_gen[RCOW_NUM_SUBSYS][RCOW_NS_PER_SUBSYS + 1];
+static bool g_nsid_reserved[RCOW_NUM_SUBSYS][RCOW_NS_PER_SUBSYS + 1];
 
 /* --------------------------------------------------------------------------
  * Placement
@@ -145,10 +146,22 @@ active_touch_nsid(uint32_t subsys, uint32_t nsid)
 	g_nsid_gen[subsys][nsid] = ++g_nsid_clock;
 }
 
-void
-s3lvol_active_note_nsid(uint32_t subsys, uint32_t nsid)
+bool
+s3lvol_active_reserve_nsid(uint32_t subsys, uint32_t nsid)
 {
+	if (subsys >= RCOW_NUM_SUBSYS || nsid == 0 || nsid > RCOW_NS_PER_SUBSYS ||
+	    g_nsid_reserved[subsys][nsid]) {
+		return false;
+	}
+	g_nsid_reserved[subsys][nsid] = true;
 	active_touch_nsid(subsys, nsid);
+	return true;
+}
+
+void
+s3lvol_active_release_nsid(uint32_t subsys, uint32_t nsid)
+{
+	g_nsid_reserved[subsys][nsid] = false;
 }
 
 uint32_t
@@ -171,10 +184,10 @@ s3lvol_active_alloc_nsid(uint32_t subsys)
 
 	/* Never-used slots (gen 0) beat anything that has been handed out or
 	 * freed. Equal gens take the lowest nsid, so a fresh subsystem still
-	 * fills 1, 2, 3, ... Touching the winner means a second alloc before
-	 * the registry add will not pick the same in-flight slot. */
+	 * fills 1, 2, 3, ... The caller reserves the chosen slot before
+	 * submitting the asynchronous attach. */
 	for (nsid = 1; nsid <= RCOW_NS_PER_SUBSYS; nsid++) {
-		if (taken[nsid]) {
+		if (taken[nsid] || g_nsid_reserved[subsys][nsid]) {
 			continue;
 		}
 		if (best == 0 ||
@@ -189,6 +202,26 @@ s3lvol_active_alloc_nsid(uint32_t subsys)
 
 	active_touch_nsid(subsys, best);
 	return best;
+}
+
+uint32_t
+s3lvol_active_alloc_auto_nsid(uint32_t *subsys, bool (*exists)(uint32_t))
+{
+	uint32_t preferred = *subsys;
+	uint32_t offset, candidate, nsid;
+
+	for (offset = 0; offset < RCOW_NUM_SUBSYS; offset++) {
+		candidate = (preferred + offset) % RCOW_NUM_SUBSYS;
+		if (!exists(candidate)) {
+			continue;
+		}
+		nsid = s3lvol_active_alloc_nsid(candidate);
+		if (nsid != 0) {
+			*subsys = candidate;
+			return nsid;
+		}
+	}
+	return 0;
 }
 
 /* --------------------------------------------------------------------------
