@@ -8,7 +8,7 @@ use std::io::{ErrorKind, Read, Write};
 use std::os::unix::net::UnixStream;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
-use std::sync::{Arc, Mutex, RwLock};
+use std::sync::{Arc, Mutex, RwLock, Weak};
 use std::time::{Duration, Instant};
 
 use chrono::Utc;
@@ -29,6 +29,7 @@ const BYTES_PER_GIB: u64 = 1024 * 1024 * 1024;
 const TMPCLONE_PREFIX: &str = "__cbc_tmpclone_";
 const INDEX_FILE_NAME: &str = "index.json";
 const INDEX_TMP_FILE_NAME: &str = "index.json.tmp";
+const MAX_INFLIGHT_CLONES: usize = 4;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct BdevInfo {
@@ -93,6 +94,11 @@ impl Default for IndexFile {
 pub struct S3Engine {
     cfg: S3Config,
     rpc: Arc<JsonRpcClient>,
+    // Bound asynchronous NVMe namespace additions while keeping index reads free.
+    clone_slots: Vec<Mutex<()>>,
+    next_clone_slot: AtomicU64,
+    operation_gate: RwLock<()>,
+    name_locks: Mutex<HashMap<String, Weak<Mutex<()>>>>,
     name_index: RwLock<HashMap<String, NameKind>>,
     metrics: Arc<MetricsCollector>,
 }
@@ -198,6 +204,10 @@ impl S3Engine {
         Ok(Self {
             cfg: s3_cfg,
             rpc,
+            clone_slots: (0..MAX_INFLIGHT_CLONES).map(|_| Mutex::new(())).collect(),
+            next_clone_slot: AtomicU64::new(0),
+            operation_gate: RwLock::new(()),
+            name_locks: Mutex::new(HashMap::new()),
             name_index: RwLock::new(cleaned_index),
             metrics,
         })
@@ -332,6 +342,19 @@ impl S3Engine {
         }
     }
 
+    // Keep same-name operations ordered without holding the global index while
+    // waiting for NVMe discovery. Weak entries are pruned on acquisition.
+    fn name_lock(&self, name: &str) -> Arc<Mutex<()>> {
+        let mut locks = self.name_locks.lock().expect("s3 name locks poisoned");
+        locks.retain(|_, lock| lock.strong_count() > 0);
+        if let Some(lock) = locks.get(name).and_then(Weak::upgrade) {
+            return lock;
+        }
+        let lock = Arc::new(Mutex::new(()));
+        locks.insert(name.to_string(), Arc::downgrade(&lock));
+        lock
+    }
+
     fn call_activate(&self, name: &str) -> CubecowResult<BdevInfo> {
         let resp = self.rpc.call_raw(
             "rcow_active_bdev",
@@ -364,6 +387,10 @@ impl S3Engine {
 
 impl Engine for S3Engine {
     fn create_volume(&self, name: &str, size_bytes: u64) -> CubecowResult<Volume> {
+        let _operation = self
+            .operation_gate
+            .write()
+            .expect("s3 operation gate poisoned");
         Self::validate_name(name, "volume")?;
         let size_gib = self.size_bytes_to_gib(size_bytes)?;
 
@@ -459,6 +486,10 @@ impl Engine for S3Engine {
     }
 
     fn delete_volume(&self, name: &str) -> CubecowResult<()> {
+        let _operation = self
+            .operation_gate
+            .write()
+            .expect("s3 operation gate poisoned");
         let mut idx = self
             .name_index
             .write()
@@ -495,6 +526,10 @@ impl Engine for S3Engine {
     }
 
     fn resize_volume(&self, name: &str, new_size_bytes: u64) -> CubecowResult<(u64, u64)> {
+        let _operation = self
+            .operation_gate
+            .write()
+            .expect("s3 operation gate poisoned");
         let new_size_gib = self.size_bytes_to_gib(new_size_bytes)?;
         let mut idx = self
             .name_index
@@ -548,6 +583,8 @@ impl Engine for S3Engine {
     }
 
     fn get_volume_info(&self, name: &str) -> CubecowResult<Volume> {
+        let name_lock = self.name_lock(name);
+        let _name = name_lock.lock().expect("s3 name lock poisoned");
         // Step 1: build the base projection under the read lock and
         // capture the snapshot's `export_uuid` (if any) so we can
         // query upload status outside the lock.
@@ -675,6 +712,10 @@ impl Engine for S3Engine {
         snapshot_name: &str,
         activate: bool,
     ) -> CubecowResult<Snapshot> {
+        let _operation = self
+            .operation_gate
+            .write()
+            .expect("s3 operation gate poisoned");
         Self::validate_name(snapshot_name, "snapshot")?;
 
         let (ultimate_origin, size_bytes) = {
@@ -788,12 +829,20 @@ impl Engine for S3Engine {
         source_snapshot: &str,
         volume_name: &str,
     ) -> CubecowResult<Volume> {
+        let slot =
+            self.next_clone_slot.fetch_add(1, Ordering::Relaxed) as usize % self.clone_slots.len();
+        let _slot = self.clone_slots[slot]
+            .lock()
+            .expect("s3 clone slot poisoned");
+        let _operation = self
+            .operation_gate
+            .read()
+            .expect("s3 operation gate poisoned");
+        let name_lock = self.name_lock(volume_name);
+        let _name = name_lock.lock().expect("s3 name lock poisoned");
         Self::validate_name(volume_name, "volume")?;
 
-        let mut idx = self
-            .name_index
-            .write()
-            .expect("s3 name_index lock poisoned");
+        let idx = self.name_index.read().expect("s3 name_index lock poisoned");
 
         // The source must be an existing snapshot. Cloning from a
         // writable volume is intentionally rejected — callers who
@@ -820,6 +869,8 @@ impl Engine for S3Engine {
                 "name '{volume_name}' already exists in s3 namespace"
             )));
         }
+
+        drop(idx);
 
         self.rpc.call_typed(
             "rcow_create_clone",
@@ -863,6 +914,10 @@ impl Engine for S3Engine {
             created_at: Utc::now().to_rfc3339(),
             activated: Some(bdev),
         };
+        let mut idx = self
+            .name_index
+            .write()
+            .expect("s3 name_index lock poisoned");
         idx.insert(volume_name.to_string(), entry.clone());
         self.persist(&idx)?;
 
@@ -875,6 +930,10 @@ impl Engine for S3Engine {
     }
 
     fn delete_snapshot(&self, snapshot_name: &str) -> CubecowResult<()> {
+        let _operation = self
+            .operation_gate
+            .write()
+            .expect("s3 operation gate poisoned");
         let mut idx = self
             .name_index
             .write()
@@ -965,6 +1024,12 @@ impl Engine for S3Engine {
     }
 
     fn activate_volume(&self, name: &str) -> CubecowResult<Volume> {
+        let _operation = self
+            .operation_gate
+            .read()
+            .expect("s3 operation gate poisoned");
+        let name_lock = self.name_lock(name);
+        let _name = name_lock.lock().expect("s3 name lock poisoned");
         // Both writable volumes and read-only snapshots can be
         // directly activated as an nvmf block device on the s3lvol
         // side. `rcow_active_bdev` + `rcow_get_bdev` are the only
@@ -973,6 +1038,8 @@ impl Engine for S3Engine {
         // of a snapshot should explicitly `create_snapshot_from_volume`-then-
         // `activate` a clone (i.e. use snapshot-of-snapshot flatten
         // + activation) rather than piggy-back on this call.
+        // Same-name locking and the operation gate fence deletion while the
+        // NVMe wait runs outside the shared index lock.
         {
             let idx = self.name_index.read().expect("s3 name_index lock poisoned");
             if !idx.contains_key(name) {
@@ -981,9 +1048,7 @@ impl Engine for S3Engine {
                 )));
             }
         }
-
         let info = self.call_activate(name)?;
-
         let mut idx = self
             .name_index
             .write()
@@ -1020,6 +1085,10 @@ impl Engine for S3Engine {
     }
 
     fn deactivate_volume(&self, name: &str) -> CubecowResult<()> {
+        let _operation = self
+            .operation_gate
+            .write()
+            .expect("s3 operation gate poisoned");
         {
             let idx = self.name_index.read().expect("s3 name_index lock poisoned");
             if !idx.contains_key(name) {
@@ -1052,6 +1121,10 @@ impl Engine for S3Engine {
     }
 
     fn export_snapshot(&self, snapshot_name: &str) -> CubecowResult<String> {
+        let _operation = self
+            .operation_gate
+            .write()
+            .expect("s3 operation gate poisoned");
         {
             let idx = self.name_index.read().expect("s3 name_index lock poisoned");
             match idx.get(snapshot_name) {
@@ -1100,6 +1173,10 @@ impl Engine for S3Engine {
     }
 
     fn import_lvol(&self, lvol_name: &str, export_uuid: &str) -> CubecowResult<Volume> {
+        let _operation = self
+            .operation_gate
+            .write()
+            .expect("s3 operation gate poisoned");
         Self::validate_name(lvol_name, "volume")?;
         if export_uuid.is_empty() {
             return Err(CubecowError::InvalidArg(
@@ -1194,6 +1271,10 @@ impl Engine for S3Engine {
     }
 
     fn reset_node_storage(&self) -> CubecowResult<()> {
+        let _operation = self
+            .operation_gate
+            .write()
+            .expect("s3 operation gate poisoned");
         let mut idx = self
             .name_index
             .write()
@@ -1265,6 +1346,9 @@ struct JsonRpcClient {
     connect_budget: Duration,
     next_id: AtomicU64,
     conn: Mutex<Option<UnixStream>>,
+    // Long device-discovery replies must not hold the mutation connection.
+    // Bound parallel waiters below the target's sixteen-waiter ceiling.
+    device_conns: Vec<Mutex<Option<UnixStream>>>,
 }
 
 impl JsonRpcClient {
@@ -1275,6 +1359,7 @@ impl JsonRpcClient {
             connect_budget,
             next_id: AtomicU64::new(1),
             conn: Mutex::new(None),
+            device_conns: (0..8).map(|_| Mutex::new(None)).collect(),
         }
     }
 
@@ -1301,7 +1386,12 @@ impl JsonRpcClient {
         // correct failure into a slow one.
         let deadline = Instant::now() + self.connect_budget;
 
-        let mut guard = self.conn.lock().map_err(|_| {
+        let connection = if method == "rcow_get_bdev" {
+            &self.device_conns[id as usize % self.device_conns.len()]
+        } else {
+            &self.conn
+        };
+        let mut guard = connection.lock().map_err(|_| {
             CubecowError::PreconditionFailed("s3lvol rpc mutex poisoned".to_string())
         })?;
 
@@ -1643,6 +1733,127 @@ mod tests {
     use super::*;
 
     #[test]
+    fn clone_device_wait_does_not_block_another_name_or_parent_read() {
+        use std::io::{BufRead, BufReader};
+        use std::os::unix::net::UnixListener;
+        use std::sync::atomic::AtomicBool;
+        use std::sync::mpsc;
+
+        let dir =
+            std::env::temp_dir().join(format!("cubecow-parallel-clones-{}", uuid::Uuid::new_v4()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("rpc.sock");
+        let listener = UnixListener::bind(&path).unwrap();
+        listener.set_nonblocking(true).unwrap();
+        let (entered_tx, entered_rx) = mpsc::channel();
+        let (release_tx, release_rx) = mpsc::channel();
+        let release_rx = Arc::new(Mutex::new(release_rx));
+        let stop = Arc::new(AtomicBool::new(false));
+        let server_stop = Arc::clone(&stop);
+        let server = std::thread::spawn(move || {
+            let mut workers = Vec::new();
+            while !server_stop.load(Ordering::Acquire) {
+                match listener.accept() {
+                    Ok((mut stream, _)) => {
+                        let entered = entered_tx.clone();
+                        let release = Arc::clone(&release_rx);
+                        let stop = Arc::clone(&server_stop);
+                        workers.push(std::thread::spawn(move || {
+                            stream.set_read_timeout(Some(Duration::from_millis(100))).unwrap();
+                            let mut reader=BufReader::new(stream.try_clone().unwrap());
+                            while !stop.load(Ordering::Acquire) {
+                                let mut line=String::new();
+                                match reader.read_line(&mut line) {
+                                    Ok(0)=>break,
+                                    Ok(_)=>{},
+                                    Err(e) if matches!(e.kind(),ErrorKind::WouldBlock|ErrorKind::TimedOut)=>continue,
+                                    Err(e)=>panic!("mock RPC read failed: {e}"),
+                                }
+                                let req:serde_json::Value=serde_json::from_str(&line).unwrap();
+                                let method=req["method"].as_str().unwrap();
+                                let name=req["params"]["device_name"].as_str().unwrap_or("");
+                                if method=="rcow_get_bdev" && name=="child-a" {
+                                    entered.send(()).unwrap();
+                                    release.lock().unwrap().recv_timeout(Duration::from_secs(5)).unwrap();
+                                }
+                                let result=if matches!(method,"rcow_active_bdev"|"rcow_get_bdev") {
+                                    serde_json::json!({"bool_value":true,"string_value":
+                                        serde_json::json!({"device_name":name,"uuid":format!("uuid-{name}"),
+                                            "nqn":"test-nqn","subsys":0,"nsid":if name=="child-a"{1}else{2},
+                                            "device_path":format!("/dev/{name}")}).to_string()})
+                                }else{serde_json::json!({"bool_value":true})};
+                                let rsp=serde_json::json!({"jsonrpc":"2.0","id":req["id"],"result":result});
+                                writeln!(stream,"{rsp}").unwrap();
+                            }
+                        }));
+                    }
+                    Err(e) if e.kind() == ErrorKind::WouldBlock => {
+                        std::thread::sleep(Duration::from_millis(1))
+                    }
+                    Err(e) => panic!("mock RPC accept failed: {e}"),
+                }
+            }
+            for worker in workers {
+                worker.join().unwrap();
+            }
+        });
+        let cfg = S3Config {
+            socket_path: path.clone(),
+            state_dir: dir.clone(),
+            rpc_timeout_ms: 5000,
+            rpc_connect_budget_ms: 5000,
+            size_policy: "round_up".to_string(),
+        };
+        let engine = Arc::new(S3Engine {
+            cfg,
+            rpc: Arc::new(JsonRpcClient::new(
+                path,
+                Duration::from_secs(5),
+                Duration::from_secs(5),
+            )),
+            clone_slots: (0..MAX_INFLIGHT_CLONES).map(|_| Mutex::new(())).collect(),
+            next_clone_slot: AtomicU64::new(0),
+            operation_gate: RwLock::new(()),
+            name_locks: Mutex::new(HashMap::new()),
+            name_index: RwLock::new(HashMap::from([(
+                "parent".to_string(),
+                NameKind::Snapshot {
+                    origin_volume: "base".to_string(),
+                    size_bytes: BYTES_PER_GIB,
+                    created_at: Utc::now().to_rfc3339(),
+                    activated: None,
+                    export_uuid: String::new(),
+                },
+            )])),
+            metrics: Arc::new(MetricsCollector::new()),
+        });
+        let first = Arc::clone(&engine);
+        let first =
+            std::thread::spawn(move || first.create_volume_from_snapshot("parent", "child-a"));
+        entered_rx.recv_timeout(Duration::from_secs(2)).unwrap();
+        let second = Arc::clone(&engine);
+        let (done_tx, done_rx) = mpsc::channel();
+        let second = std::thread::spawn(move || {
+            let parent = second.get_volume_info("parent");
+            let clone = second.create_volume_from_snapshot("parent", "child-b");
+            done_tx.send((parent, clone)).unwrap();
+        });
+        let other = done_rx.recv_timeout(Duration::from_secs(2));
+        release_tx.send(()).unwrap();
+        let first_result = first.join().unwrap();
+        second.join().unwrap();
+        stop.store(true, Ordering::Release);
+        server.join().unwrap();
+        let (parent, clone) =
+            other.expect("another name or parent read waited behind NVMe discovery");
+        assert!(parent.is_ok());
+        assert!(clone.is_ok());
+        assert!(first_result.is_ok());
+        assert_eq!(engine.list_volumes(10, None).0.len(), 2);
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
     fn validate_name_rejects_reserved_prefix() {
         assert!(S3Engine::validate_name("__cbc_tmpclone_foo", "volume").is_err());
         assert!(S3Engine::validate_name("normal-name", "volume").is_ok());
@@ -1760,6 +1971,10 @@ mod tests {
                 Duration::from_millis(1000),
                 Duration::from_millis(cfg.rpc_connect_budget_ms),
             )),
+            clone_slots: (0..MAX_INFLIGHT_CLONES).map(|_| Mutex::new(())).collect(),
+            next_clone_slot: AtomicU64::new(0),
+            operation_gate: RwLock::new(()),
+            name_locks: Mutex::new(HashMap::new()),
             name_index: RwLock::new(HashMap::new()),
             metrics: Arc::new(MetricsCollector::new()),
         };
@@ -1778,6 +1993,10 @@ mod tests {
                 Duration::from_millis(1000),
                 Duration::from_millis(cfg2.rpc_connect_budget_ms),
             )),
+            clone_slots: (0..MAX_INFLIGHT_CLONES).map(|_| Mutex::new(())).collect(),
+            next_clone_slot: AtomicU64::new(0),
+            operation_gate: RwLock::new(()),
+            name_locks: Mutex::new(HashMap::new()),
             name_index: RwLock::new(HashMap::new()),
             metrics: Arc::new(MetricsCollector::new()),
         };
@@ -1904,6 +2123,10 @@ mod tests {
                 Duration::from_millis(cfg.rpc_timeout_ms),
                 Duration::from_millis(cfg.rpc_connect_budget_ms),
             )),
+            clone_slots: (0..MAX_INFLIGHT_CLONES).map(|_| Mutex::new(())).collect(),
+            next_clone_slot: AtomicU64::new(0),
+            operation_gate: RwLock::new(()),
+            name_locks: Mutex::new(HashMap::new()),
             name_index: RwLock::new(HashMap::new()),
             metrics: Arc::new(MetricsCollector::new()),
         });
@@ -1924,48 +2147,44 @@ mod tests {
         let server = std::thread::spawn(move || {
             let listener = UnixListener::bind(&sock).expect("bind");
             ready_tx.send(()).ok();
-            let (mut stream, _) = listener.accept().expect("accept");
-            // Never block forever if the client stops sending requests.
-            stream
+            let (mut mutation, _) = listener.accept().expect("accept mutation connection");
+            mutation
                 .set_read_timeout(Some(Duration::from_secs(5)))
-                .expect("set read timeout");
-            let mut reader = BufReader::new(stream.try_clone().expect("clone"));
-            loop {
+                .unwrap();
+            let mut device = None;
+            for expected in ["rcow_active_bdev", "rcow_get_bdev", "rcow_deactive_bdev"] {
+                let stream = if expected == "rcow_get_bdev" {
+                    let (stream, _) = listener.accept().expect("accept discovery connection");
+                    stream
+                        .set_read_timeout(Some(Duration::from_secs(5)))
+                        .unwrap();
+                    device.insert(stream)
+                } else {
+                    &mut mutation
+                };
                 let mut line = String::new();
-                if reader.read_line(&mut line).unwrap_or(0) == 0 {
-                    break;
-                }
-                let req: serde_json::Value =
-                    serde_json::from_str(line.trim()).unwrap_or(serde_json::json!({}));
-                let id = req.get("id").cloned().unwrap_or(serde_json::json!(0));
-                let method = req.get("method").and_then(|m| m.as_str()).unwrap_or("");
-                if method == "rcow_active_bdev" || method == "rcow_get_bdev" {
+                BufReader::new(stream.try_clone().unwrap())
+                    .read_line(&mut line)
+                    .unwrap();
+                let req: serde_json::Value = serde_json::from_str(&line).unwrap();
+                assert_eq!(req["method"], expected);
+                if expected == "rcow_deactive_bdev" {
+                    detach_tx.send(eng.name_index.try_write().is_err()).unwrap();
+                } else {
                     eng.name_index.write().unwrap().remove("vol");
                 }
                 let nested = r#"{"device_name":"vol","uuid":"u","nqn":"nqn","subsys":1,"nsid":1,"device_path":"/dev/nvme0n1"}"#;
-                if method == "rcow_deactive_bdev" {
-                    detach_tx.send(eng.name_index.try_write().is_err()).ok();
-                }
-                let resp = if method == "rcow_deactive_bdev" {
-                    serde_json::json!({
-                        "jsonrpc": "2.0",
-                        "id": id,
-                        "result": {"bool_value": true}
-                    })
+                let result = if expected == "rcow_deactive_bdev" {
+                    serde_json::json!({"bool_value": true})
                 } else {
-                    serde_json::json!({
-                        "jsonrpc": "2.0",
-                        "id": id,
-                        "result": {"string_value": nested}
-                    })
+                    serde_json::json!({"string_value": nested})
                 };
-                let mut body = serde_json::to_vec(&resp).unwrap();
-                body.push(b'\n');
-                stream.write_all(&body).unwrap();
-                stream.flush().unwrap();
-                if method == "rcow_deactive_bdev" {
-                    break;
-                }
+                writeln!(
+                    stream,
+                    "{}",
+                    serde_json::json!({"jsonrpc":"2.0","id":req["id"],"result":result})
+                )
+                .unwrap();
             }
         });
         ready_rx.recv().unwrap();
@@ -2020,6 +2239,10 @@ mod tests {
                     Duration::from_secs(2),
                 )),
                 cfg,
+                clone_slots: (0..MAX_INFLIGHT_CLONES).map(|_| Mutex::new(())).collect(),
+                next_clone_slot: AtomicU64::new(0),
+                operation_gate: RwLock::new(()),
+                name_locks: Mutex::new(HashMap::new()),
                 name_index: RwLock::new(HashMap::new()),
                 metrics: Arc::new(MetricsCollector::new()),
             };
