@@ -696,3 +696,12 @@ It is a snapshot of the current state, not a promise: something can pin the
 snapshot again between the query and the delete, and a retry that is refused
 again is reported by `--retry-pending` (exit status 1) rather than hidden.
 
+
+### Startup replay validation
+
+Startup combines the saved active registry and pending replay plan before restoring
+namespace assignments. A conflicting assignment or a recorded volume that cannot
+be matched keeps the listener closed and preserves the recovery files. Activation
+requests are sent in bounded batches. Before listeners open, every namespace must
+match the saved subsystem, NSID and UUID; a partial or unexpected layout fails
+startup instead of exposing a different disk to a reconnecting host.

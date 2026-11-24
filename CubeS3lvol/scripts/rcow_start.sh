@@ -440,7 +440,11 @@ fi
 if [ "${DO_REPLAY}" -eq 1 ]; then
 	rcow_step "restoring previously active volumes"
 	REPLAY_RC=0
-	rcow_replay_registry || REPLAY_RC=1
+	if ! rcow_restore_before_listen; then
+		rcow_err "volume replay or layout verification failed; NVMe listeners remain closed"
+		rcow_warn "the target and replay state are retained; do not disconnect the initiator"
+		exit 1
+	fi
 else
 	rcow_step "restore: skipped (--no-replay)"
 	REPLAY_RC=0

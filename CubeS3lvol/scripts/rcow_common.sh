@@ -1984,6 +1984,77 @@ if complete:
 ' "${RCOW_LVS_NAME}"
 }
 
+# A new process needs the full intended layout, including volumes an earlier
+# attempt already attached before saving a smaller pending plan.
+rcow_stage_start_replay()
+{
+	[ -s "${RCOW_ACTIVE_FILE}" ] || [ -s "${RCOW_REPLAY_FILE}" ] || return 0
+	python3 - "${RCOW_ACTIVE_FILE}" "${RCOW_REPLAY_FILE}" <<'PY' || return 1
+import json, os, sys, tempfile
+
+active, plan = sys.argv[1:]
+entries = {}
+slots = {}
+for path in (active, plan):
+    if not os.path.exists(path) or os.path.getsize(path) == 0:
+        continue
+    with open(path) as source:
+        records = json.load(source)
+    for name, entry in records.items():
+        slot = (entry["subsys"], entry["nsid"])
+        if (name in entries and entries[name] != entry) or slots.get(slot, name) != name:
+            sys.exit("conflicting replay placement for %s" % name)
+        entries[name] = entry
+        slots[slot] = name
+
+directory = os.path.dirname(os.path.abspath(plan))
+fd, tmp = tempfile.mkstemp(prefix=".rcow-replay-", dir=directory)
+try:
+    with os.fdopen(fd, "w") as dest:
+        json.dump(entries, dest)
+        dest.flush()
+        os.fsync(dest.fileno())
+    os.replace(tmp, plan)
+finally:
+    if os.path.exists(tmp):
+        os.unlink(tmp)
+PY
+	rcow_fsync_file "${RCOW_REPLAY_FILE}"
+}
+
+# Verify the target side before the Linux initiator can reconnect. Host
+# device paths are checked separately once it has connected.
+rcow_verify_replay_layout()
+{
+	python3 -B - "${RCOW_RPC_PY}" "${RCOW_RPC_SOCK}" "${RCOW_RPC_TIMEOUT}" \
+		"${RCOW_NQN_PREFIX}" "${RCOW_NUM_SUBSYS}" "$1" <<'PY'
+import json, runpy, sys
+
+client, sock, timeout, prefix, count, plan = sys.argv[1:]
+send = runpy.run_path(client)["_send"]
+with open(plan) as source:
+    entries = json.load(source)
+expected = {(e["subsys"], e["nsid"]): e["uuid"].lower() for e in entries.values()}
+if len(expected) != len(entries):
+    sys.exit("duplicate namespace slots in replay plan")
+
+for group in range(int(count)):
+    nqn = "%s%02d" % (prefix, group)
+    ok, rows, _ = send(sock, min(float(timeout), 10), "nvmf_get_subsystems", {"nqn": nqn})
+    if not ok or not isinstance(rows, list) or len(rows) != 1 or rows[0].get("nqn") != nqn:
+        sys.exit("could not verify subsystem %s" % nqn)
+    namespaces = rows[0]["namespaces"]
+    actual = {(group, ns["nsid"]): ns["uuid"].lower() for ns in namespaces}
+    want = {slot: uuid for slot, uuid in expected.items() if slot[0] == group}
+    if len(namespaces) != len(actual) or actual != want:
+        sys.exit("namespace layout differs on subsystem %s" % nqn)
+    for slot in want:
+        del expected[slot]
+if expected:
+    sys.exit("replay plan refers to a subsystem outside the configured grid")
+PY
+}
+
 # Keep only the named entries in a registry file; remove the file when none are
 # left. Used to shrink the replay plan to what still has to be done.
 rcow_registry_keep()
@@ -2083,6 +2154,9 @@ PY
 rcow_replay_registry()
 {
 	local plan="${RCOW_REPLAY_FILE}"
+	local mode="${1:-online}"
+	local offset
+	local -a batch=()
 	local uuid_map name subsys nsid want_uuid have_uuid have_state have_errno
 	local have_error inventory_complete out payload res first row
 	local -a accepted=()
@@ -2116,10 +2190,12 @@ by hand once you have decided what it should have said"
 		return 1
 	fi
 
-	rm -f "${RCOW_ACTIVE_FILE}"
-
 	uuid_map="$(mktemp "${RCOW_RUN_DIR}/uuids.XXXXXX")" || return 1
-	rcow_volume_uuids >"${uuid_map}"
+	if ! rcow_volume_uuids >"${uuid_map}"; then
+		rm -f "${uuid_map}"
+		rcow_err "could not read volume identities; the registry and replay plan are preserved"
+		return 1
+	fi
 	inventory_complete="$(awk -F'\t' '$1 == "C" && $2 == "1" { print 1; exit }' \
 		"${uuid_map}")"
 
@@ -2173,12 +2249,19 @@ mistaking an open failure for deletion"
 
 	rm -f "${uuid_map}"
 
-	if [ "${#accepted[@]}" -gt 0 ]; then
+	if [ "${mode}" = startup ] && [ "${refused_n}" -gt 0 ]; then
+		rcow_err "${refused_n} recorded volume(s) could not be matched; the registry and replay plan are preserved"
+		return 1
+	fi
+	rm -f "${RCOW_ACTIVE_FILE}" || return 1
+
+	for ((offset = 0; offset < ${#accepted[@]}; offset += 96)); do
+		batch=("${accepted[@]:offset:96}")
 		# python builds the payload: a volume name can hold a quote or a
 		# backslash, and the printf-concatenated form this replaces would then
 		# produce malformed JSON. rcow_rpc forwards exactly one argument, so
 		# the payload has to be one string.
-		payload="$(printf '%s\n' "${accepted[@]}" | python3 -c '
+		payload="$(printf '%s\n' "${batch[@]}" | python3 -c '
 import json, sys
 vols = []
 for line in sys.stdin:
@@ -2231,13 +2314,13 @@ for f in r.get("failed") or []:
 			# failure this path exists to prevent, and the retry is
 			# idempotent.
 			rcow_warn "the rcow_active_bdev_batch reply could not be read \
-as a result (${out}); treating all ${#accepted[@]} volume(s) as pending rather \
+as a result (${out}); treating all ${#batch[@]} volume(s) as pending rather \
 than dropping any"
-			failed_n=$((failed_n + ${#accepted[@]}))
+			failed_n=$((failed_n + ${#batch[@]}))
 			;;
 		*)
 			first="$(printf '%s\n' "${res}" | head -n 1)"
-			done_n=$(( ${first%%$'\t'*} + ${first##*$'\t'} ))
+			done_n=$(( done_n + ${first%%$'\t'*} + ${first##*$'\t'} ))
 			while IFS=$'\t' read -r row name have_error; do
 				[ "${row}" = "F" ] || continue
 				rcow_err "'${name}' could not be restored: \
@@ -2246,17 +2329,20 @@ ${have_error:-unknown activation error}; keeping it in ${plan}"
 			done < <(printf '%s\n' "${res}" | tail -n +2)
 			;;
 		esac
-	fi
+	done
 
 	# The plan is the restart transaction, not merely a same-process retry
 	# queue. Until every replayable volume succeeds, retain successful entries
 	# alongside failures: if this target is stopped before the next retry, its
 	# in-memory namespaces disappear and those successes must be replayed too.
 	# Terminal refusals are still removed immediately.
-	if [ "${failed_n}" -eq 0 ]; then
-		rcow_registry_keep "${plan}" || return 1
-	else
-		rcow_registry_keep "${plan}" "${replayable[@]}" || return 1
+	# Startup retains the full plan until the exported namespace layout is verified.
+	if [ "${mode}" != startup ]; then
+		if [ "${failed_n}" -eq 0 ]; then
+			rcow_registry_keep "${plan}" || return 1
+		else
+			rcow_registry_keep "${plan}" "${replayable[@]}" || return 1
+		fi
 	fi
 
 	rcow_log "replay: ${done_n} restored, ${refused_n} refused, \
@@ -2268,6 +2354,15 @@ listed in ${plan} and will be retried by the next start or by rcow_recovery.sh"
 		return 1
 	fi
 	return 0
+}
+
+rcow_restore_before_listen()
+{
+	rcow_stage_start_replay || return 1
+	[ -s "${RCOW_REPLAY_FILE}" ] || return 0
+	rcow_replay_registry startup || return 1
+	rcow_verify_replay_layout "${RCOW_REPLAY_FILE}" || return 1
+	rm -f "${RCOW_REPLAY_FILE}"
 }
 
 # Every recorded volume has to resolve to a block device that can actually be
@@ -2337,6 +2432,25 @@ for e in entries:
 
 		total="$(printf '%s' "${out}" | python3 -c \
 			'import json,sys; print(len(json.load(sys.stdin)))' 2>/dev/null || echo 0)"
+
+		# During NVMe reconnect the target can return no resolved namespaces
+		# yet. Wait for the expected names as well as device paths; an empty
+		# list must not end the wait before the saved layout is compared.
+		if [ -n "${expect}" ]; then
+			local absent
+			absent="$(printf '%s' "${out}" | python3 -c '
+import json, sys
+want = json.load(open(sys.argv[1]))
+live = {e.get("device_name", "") for e in json.load(sys.stdin)}
+for e in want:
+    name = e.get("device_name", "")
+    if name not in live:
+        print("%s: no active namespace yet" % name)
+' "${expect}")" || return 1
+			if [ -n "${absent}" ]; then
+				missing="${missing}${absent}"$'\n'
+			fi
+		fi
 
 		[ -z "${missing}" ] && break
 		[ "${SECONDS}" -ge "${deadline}" ] && break

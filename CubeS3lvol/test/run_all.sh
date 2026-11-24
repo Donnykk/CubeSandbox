@@ -306,7 +306,7 @@ S3_ARGS=(-e "${ENDPOINT}" -b "${BUCKET}" -r "${REGION}")
 # RPC socket, touches the host's nvme controllers and the shared registries, so
 # it needs root, credentials and the box to itself -- not CI-able as wired.
 if [ "${MODE}" = list ]; then
-	echo "offline tools:       s3_bucket_selftest isa_baseline rpc_py38_compat replay_registry"
+	echo "offline tools:       s3_bucket_selftest isa_baseline rpc_py38_compat replay_registry startup_replay"
 	echo "offline integration: spawner thread_bounce journal wal cache flush export"
 	echo "                     statefile local_dev checkpoint export_swap export_read"
 	echo "                     copy_xml pending_persist active_nsid"
@@ -384,6 +384,7 @@ run_suite s3_bucket_selftest python3 ./test/tools/s3_bucket.py --self-test
 run_suite isa_baseline ./test/tools/test_isa_baseline.sh
 run_suite rpc_py38_compat ./test/tools/test_rpc_py38_compat.sh
 run_suite replay_registry bash ./test/tools/test_replay_registry.sh
+run_suite startup_replay python3 ./test/integration/test_verify_active.py
 run_suite lvs_identity ./test/tools/test_lvs_identity.sh
 run_suite bstore_recovery ./test/tools/test_bstore_recovery.sh
 run_suite tgt_cpumask ./test/tools/test_tgt_cpumask.sh

@@ -645,3 +645,12 @@ of `make check` / `make check-rules`.
   stale binary**: do the `make` it tells you to. Note the top-level default
   target now builds the binary too; `make shared` builds only the libraries and
   does not update `s3lvol_tgt`.
+
+Startup replay and namespace validation can be checked without SPDK or S3:
+
+```bash
+python3 -m unittest discover -s test/integration -p 'test_verify_active.py' -v
+```
+
+These tests cover saved replay plans, missing device paths, namespace identity,
+and startup failure handling.
