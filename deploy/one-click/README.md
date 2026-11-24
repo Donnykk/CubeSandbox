@@ -1008,3 +1008,9 @@ config hard-codes the certificate paths `…/certs/cube.app+3.pem` and
   deploy stage refreshes the `cubeproxy-certs` Secret and restarts cube-proxy
   to pick up the new material. The self-signed default trips browsers/clients with
   an "untrusted CA" warning, so replace it for any non-throwaway use.
+
+### CubeS3lvol recovery failures
+
+A hot upgrade that attached the replacement but failed verification returns status
+3. The installer stops its remaining steps, retaining the replacement and initiator
+for recovery rather than stopping supporting services.

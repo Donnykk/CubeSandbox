@@ -32,7 +32,9 @@
 #
 # Exit: 0  the target is on the new build (upgraded, or there was nothing to
 #          upgrade because none was running)
-#       non-zero  rollback happened, nothing is running, or the new build was
+#       3  the replacement attached or served I/O before verification failed;
+#          the caller must stop the remaining installation for recovery.
+#       other non-zero  rollback happened, nothing is running, or the new build was
 #          kept because it attached before failing verification. The caller
 #          must not report the upgrade as done.
 
@@ -484,13 +486,13 @@ if [ "${NEW_STARTED}" -eq 1 ]; then
   warn "the new build is serving but its layout verification failed"
   warn "refusing automatic rollback: the previous build may not understand writes acknowledged by the new target"
   warn "the new build remains running and ${BARE} remains on ${NEW_VERSION}; repair or retry with this version"
-  exit 1
+  exit 3
 fi
 if [ -s "${RCOW_START_ATTACHED}" ]; then
   warn "the new build attached the lvstore before startup failed"
   warn "refusing automatic rollback: it may have created volatile write-back records the previous build cannot replay"
   warn "${BARE} remains on ${NEW_VERSION}; restart or repair with this version"
-  exit 1
+  exit 3
 fi
 
 # Roll back without the planned stop. The new process may already have attached

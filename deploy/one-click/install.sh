@@ -2165,6 +2165,9 @@ if [[ -d "${PKG_ROOT}/CubeS3lvol" ]]; then
     TOOLBOX_ROOT="${INSTALL_PREFIX}" \
       bash "${PKG_ROOT}/scripts/systemd/cube-s3lvol-hot-upgrade.sh" \
         "${S3LVOL_STAGED_DIR}" "${S3LVOL_OLD_DIR}" || S3LVOL_UPGRADE_RC=$?
+    if [[ "${S3LVOL_UPGRADE_RC}" == "3" ]]; then
+      die "S3lvol hot upgrade requires recovery; the remaining services have not been stopped"
+    fi
   else
     # Nothing is going to start it, so the bare name is put in place here.
     switch_cubes3lvol_bare_to "${S3LVOL_STAGED_DIR}"

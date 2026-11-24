@@ -102,6 +102,10 @@ if [[ "${consume}" -eq 0 ]]; then
     "${RCOW_UPGRADE}"
   fi
 elif rcow_target_alive; then
+  if [[ -s "${RCOW_HOT_SNAPSHOT}" && -s "${RCOW_REPLAY_FILE}" ]]; then
+    log "CubeS3lvol: hot replay is incomplete; retaining the target and NVMe controllers for recovery"
+    exit 1
+  fi
   log "CubeS3lvol: target alive, full teardown via rcow_stop.sh"
   "${RCOW_STOP}"
 elif [[ -n "$(rcow_target_instances)" ]]; then

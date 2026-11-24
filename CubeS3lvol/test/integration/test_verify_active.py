@@ -140,6 +140,38 @@ class StartupReplayTests(unittest.TestCase):
         self.assertEqual(json.loads((self.root / "replay.json").read_text()), plan)
         self.assertFalse((self.root / "batches.jsonl").exists())
 
+    def test_hot_upgrade_reports_recovery_status_after_attach_or_serving(self):
+        upgrade = COMMON.parents[2] / "deploy" / "one-click" / "scripts" / "systemd" / "cube-s3lvol-hot-upgrade.sh"
+        source = upgrade.read_text()
+        start = source.index("NEW_STARTED=0\n")
+        end = source.index("# Roll back without the planned stop.", start)
+        marker = self.root / "attached"
+        for serving, attached, expected in [(True, False, 3), (False, True, 3), (False, False, 0)]:
+            with self.subTest(serving=serving, attached=attached):
+                marker.unlink(missing_ok=True)
+                if attached:
+                    marker.write_text("attached")
+                setup = ('set -eu\nwarn() { :; }\n'
+                         'start_and_wait() { return ' + ("0" if serving else "1") + '; }\n'
+                         'verify() { return 1; }\n'
+                         'RCOW_START_ATTACHED=' + shlex.quote(str(marker)) + '\n'
+                         'BARE=target\nNEW_VERSION=new\n')
+                result = subprocess.run(["bash", "-c", setup + source[start:end]],
+                                        text=True, capture_output=True)
+                self.assertEqual(result.returncode, expected, result.stderr)
+
+    def test_installer_stops_remaining_steps_when_recovery_is_required(self):
+        install = COMMON.parents[2] / "deploy" / "one-click" / "install.sh"
+        source = install.read_text()
+        start = source.index('    if [[ "${S3LVOL_UPGRADE_RC}" == "3" ]]; then')
+        end = source.index("    fi", start) + len("    fi")
+        sentinel = self.root / "remaining-services-stopped"
+        script = ('set -eu\nS3LVOL_UPGRADE_RC=3\ndie() { exit 42; }\n' +
+                  source[start:end] + '\ntouch ' + shlex.quote(str(sentinel)))
+        result = subprocess.run(["bash", "-c", script], text=True, capture_output=True)
+        self.assertEqual(result.returncode, 42, result.stderr)
+        self.assertFalse(sentinel.exists())
+
     def test_device_verification_waits_for_reconnect_and_rejects_changed_uuid(self):
         source = COMMON.read_text()
         start = source.index("rcow_verify_active()\n{")
