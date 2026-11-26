@@ -1,0 +1,23 @@
+pkgs/cubedb/migrate/migrations/postgres/20261125031758_node_inventory.sql
+  s_8a65e12e489491::t_5fe3243c4b6bc1 4,6,25
+  s_8a65e12e489491::t_186168a1a2945b 16-17,20-24,40
+  s_8a65e12e489491::t_ab545008b02a0e 7,26-38
+CubeOps/README.md
+  s_8a65e12e489491::t_c684602258dc7e 179-182,185-197
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "0764fe6708cf14aaa9a645bc8332cb7ce988931d",
+  "prompts": {},
+  "sessions": {
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6.2-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
