@@ -1,0 +1,61 @@
+pkgs/cubedb/migrate/migrations/postgres/20261125031758_node_inventory.sql
+  s_8a65e12e489491::t_5fe3243c4b6bc1 4-6,26
+  s_8a65e12e489491::t_186168a1a2945b 17-25,41
+  s_8a65e12e489491::t_ab545008b02a0e 8,27-39
+  s_8a65e12e489491::t_643c739048a2be 1-3,7,9-16,40
+CubeOps/README.md
+  s_8a65e12e489491::t_c684602258dc7e 179-197
+  s_8a65e12e489491::t_cdd345a0ac4d0e 119,177-178,198-233
+CubeOps/config.example.yaml
+  s_8a65e12e489491::t_898e44120c6a50 38-42
+CubeOps/internal/config/config.go
+  s_8a65e12e489491::t_266ce1b522ec49 56-57,461-463
+CubeOps/internal/config/config_test.go
+  s_8a65e12e489491::t_0c1966b7271266 30,37,58-60,74,82,91-93
+CubeOps/internal/nodemanagement/model/inventory.go
+  s_8a65e12e489491::t_384a3d000095d3 1-37
+CubeOps/internal/nodemanagement/model/inventory_test.go
+  s_8a65e12e489491::t_5905786071f49d 1-36
+CubeOps/internal/nodemanagement/nodemanagement.go
+  s_8a65e12e489491::t_8ae0868409af27 33,35
+CubeOps/internal/nodemanagement/service/inventory_test.go
+  s_8a65e12e489491::t_8ba86518af840c 1-51
+CubeOps/internal/nodemanagement/service/service.go
+  s_8a65e12e489491::t_7dd8ec654ba2bd 200-201
+CubeOps/internal/nodemanagement/store/status.go
+  s_8a65e12e489491::t_d668bc6e8786c8 1-107
+CubeOps/internal/nodemanagement/store/store.go
+  s_8a65e12e489491::t_bcd45406742abc 87-88,91-92
+CubeOps/internal/server/server.go
+  s_8a65e12e489491::t_8c62dfdb03a7ac 77
+CubeOps/internal/store/node_inventory_test.go
+  s_8a65e12e489491::t_d34f96e2acc30f 1-218
+CubeOps/internal/store/nodemanagement_store_test.go
+  s_8a65e12e489491::t_1504c5049ac0a0 21,65,118,151,205,227,249,293,305,333,392,415
+deploy/kubernetes/chart/README.md
+  s_8a65e12e489491::t_970307e1ba7a32 706-712
+deploy/kubernetes/chart/templates/ops.yaml
+  s_8a65e12e489491::t_72f8181b818b13 6-11,55-58
+deploy/kubernetes/chart/values.yaml
+  s_8a65e12e489491::t_a49ff17e4e4443 531-533
+pkgs/cubedb/migrate/migrations/mysql/20261125031758_node_inventory.sql
+  s_8a65e12e489491::t_40fcf0649a9227 1-41
+CubeOps/internal/nodemanagement/store/status_test.go
+  s_8a65e12e489491::t_9aba2c119068ca 1-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "5c912798ede4861461217152559543429764d0e1",
+  "prompts": {},
+  "sessions": {
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6.2-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
