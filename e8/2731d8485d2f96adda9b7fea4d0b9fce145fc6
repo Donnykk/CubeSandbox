@@ -1,0 +1,21 @@
+Cubelet/pkg/cubelet/nodestatus/setters_test.go
+  s_8a65e12e489491::t_2abcc1b517cfe7 1-40
+Cubelet/pkg/cubelet/nodestatus/setters.go
+  s_8a65e12e489491::t_aa1f8b50f86220 149
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "e82731d8485d2f96adda9b7fea4d0b9fce145fc6",
+  "prompts": {},
+  "sessions": {
+    "s_8a65e12e489491": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18b54-f0c0-7303-b319-37a2ddfdf988",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "tangpc <tangpc@chinatelecom.cn>"
+    }
+  }
+}
